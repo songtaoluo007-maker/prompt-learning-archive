@@ -623,12 +623,21 @@ public class UserService {
   dropdownLinks.forEach(a => {
     a.addEventListener('click', e => {
       e.preventDefault();
-      showPage(a.dataset.page);
+      const pageId = a.dataset.page;
+      showPage(pageId);
+      history.replaceState(null, '', `#${pageId}`);
     });
   });
 
-  // 默认显示第一个页面
-  showPage('p-principles');
+  function requestedPage() {
+    const queryPage = new URLSearchParams(location.search).get('page');
+    const hashPage = location.hash.slice(1);
+    const pageId = queryPage || hashPage || 'p-principles';
+    return document.getElementById(pageId)?.classList.contains('page') ? pageId : 'p-principles';
+  }
+
+  showPage(requestedPage());
+  window.addEventListener('hashchange', () => showPage(requestedPage()));
 </script>
 
 </body>
