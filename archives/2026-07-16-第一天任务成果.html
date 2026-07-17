@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>提示词优化技巧全景图</title>
+<style>
+  :root {
+    --bg: #fafaf9; --text: #1a1a1a; --text2: #555; --accent: #2563eb;
+    --accent-light: #eff4ff; --border: #e5e5e5;
+    --tag-basic: #059669; --tag-advanced: #7c3aed; --tag-structure: #db2777; --tag-scenario: #d97706;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; font-size: 15px; }
+
+  /* ===== 导航栏 ===== */
+  .navbar { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 200; }
+  .navbar-inner { max-width: 1100px; margin: 0 auto; padding: 0 40px; display: flex; align-items: center; height: 56px; }
+  .navbar .brand { font-weight: 700; font-size: 15px; letter-spacing: -0.3px; margin-right: 48px; white-space: nowrap; }
+  .nav-list { display: flex; list-style: none; height: 100%; align-items: center; gap: 0; }
+  .nav-item { position: relative; height: 100%; display: flex; align-items: center; }
+  .nav-item > a { text-decoration: none; color: var(--text2); font-size: 14px; padding: 0 20px; height: 100%; display: flex; align-items: center; transition: color 0.2s; white-space: nowrap; }
+  .nav-item > a:hover, .nav-item.active > a { color: var(--accent); }
+  .nav-item.active > a { border-bottom: 2px solid var(--accent); }
+
+  /* 下拉菜单 */
+  .dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); min-width: 220px; padding: 8px 0; z-index: 300; }
+  .nav-item:hover .dropdown { display: block; }
+  .dropdown a { display: block; padding: 10px 20px; text-decoration: none; color: var(--text); font-size: 13.5px; transition: background 0.15s; }
+  .dropdown a:hover { background: var(--accent-light); color: var(--accent); }
+  .dropdown a.current { color: var(--accent); font-weight: 600; background: var(--accent-light); }
+
+  /* ===== 页面容器 ===== */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .container { max-width: 960px; margin: 0 auto; padding: 0 40px; }
+
+  /* Hero */
+  .hero { padding: 72px 0 56px; border-bottom: 1px solid var(--border); }
+  .hero .label { font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); font-weight: 600; margin-bottom: 16px; }
+  .hero h1 { font-size: 38px; font-weight: 800; line-height: 1.2; letter-spacing: -1px; margin-bottom: 18px; }
+  .hero .desc { font-size: 16px; color: var(--text2); max-width: 620px; line-height: 1.8; }
+
+  /* Section */
+  .section { padding: 56px 0; border-bottom: 1px solid var(--border); }
+  .section:last-of-type { border-bottom: none; }
+  .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px; }
+  .section-num { font-size: 13px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .section-header h2 { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
+  .section-header .en { font-size: 13px; color: #999; font-weight: 400; }
+
+  /* 原则三栏 */
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #fff; }
+  .principle { padding: 28px 24px; border-right: 1px solid var(--border); transition: background 0.2s; }
+  .principle:last-child { border-right: none; }
+  .principle:hover { background: var(--accent-light); }
+  .principle .num { font-size: 32px; font-weight: 800; color: var(--accent); opacity: 0.15; line-height: 1; margin-bottom: 14px; }
+  .principle h3 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+  .principle .en-sub { font-size: 12px; color: #999; margin-bottom: 12px; font-weight: 500; }
+  .principle p { font-size: 13.5px; color: var(--text2); line-height: 1.7; }
+
+  /* 技巧两栏 */
+  .tech-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .tech-item { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px; transition: box-shadow 0.2s, border-color 0.2s; }
+  .tech-item:hover { border-color: #ccc; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .tech-item .tech-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tech-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; }
+  .tag-basic { background: #ecfdf5; color: var(--tag-basic); }
+  .tag-advanced { background: #f5f3ff; color: var(--tag-advanced); }
+  .tag-structure { background: #fdf2f8; color: var(--tag-structure); }
+  .tag-scenario { background: #fffbeb; color: var(--tag-scenario); }
+  .tech-item h4 { font-size: 14.5px; font-weight: 700; }
+  .tech-item .tech-desc { font-size: 13px; color: var(--text2); margin-bottom: 12px; line-height: 1.6; }
+  .tech-item .tech-example { background: #f8f8f7; border-radius: 6px; padding: 12px 14px; font-size: 12.5px; line-height: 1.6; color: #444; border-left: 3px solid var(--border); }
+  .tech-item .tech-example strong { color: var(--text); }
+
+  /* 决策流程 */
+  .flow-steps { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 32px 36px; }
+  .flow-row { display: flex; align-items: flex-start; gap: 20px; position: relative; }
+  .flow-row:not(:last-child) { padding-bottom: 24px; }
+  .flow-row:not(:last-child)::after { content: ''; position: absolute; left: 17px; top: 40px; bottom: 0; width: 2px; background: var(--border); }
+  .flow-dot { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; z-index: 1; }
+  .flow-dot.green { background: #059669; }
+  .flow-dot.purple { background: #7c3aed; }
+  .flow-content { flex: 1; padding-top: 6px; }
+  .flow-content h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .flow-content p { font-size: 13.5px; color: var(--text2); line-height: 1.6; }
+  .flow-branches { display: flex; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  .flow-branch { background: #f8f8f7; border: 1px solid var(--border); border-radius: 6px; padding: 10px 16px; font-size: 13px; flex: 1; min-width: 180px; }
+  .flow-branch strong { color: var(--text); }
+
+  /* 对比表 */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 14px; background: #fff; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .compare-table thead th { background: #f8f8f7; padding: 12px 18px; text-align: left; font-weight: 600; font-size: 13px; color: var(--text2); border-bottom: 1px solid var(--border); }
+  .compare-table tbody td { padding: 12px 18px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .compare-table tbody tr:last-child td { border-bottom: none; }
+  .compare-table tbody tr:hover { background: #fafafa; }
+  .compare-table .wrong { color: #dc2626; }
+  .compare-table .right { color: #059669; font-weight: 600; }
+
+  /* ===== 文章页样式 ===== */
+  .article { max-width: 720px; }
+  .article h3 { font-size: 18px; font-weight: 700; margin: 32px 0 14px; letter-spacing: -0.3px; }
+  .article h3:first-child { margin-top: 0; }
+  .article p { font-size: 15px; line-height: 1.85; margin-bottom: 14px; }
+  .article ul, .article ol { margin: 0 0 14px 24px; font-size: 15px; line-height: 1.85; }
+  .article li { margin-bottom: 4px; }
+  .article blockquote { border-left: 3px solid var(--accent); background: var(--accent-light); padding: 16px 20px; margin: 18px 0; border-radius: 0 6px 6px 0; font-size: 14.5px; line-height: 1.75; }
+  .article blockquote p { margin-bottom: 0; }
+  .article strong { font-weight: 700; }
+
+  .hl-box { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px 24px; margin: 20px 0; }
+  .hl-box h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 8px; }
+  .hl-box p { font-size: 14px; margin-bottom: 6px; }
+  .hl-box p:last-child { margin-bottom: 0; }
+
+  /* 迭代卡片 */
+  .iter-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px; margin-bottom: 18px; }
+  .iter-head { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .iter-badge { background: var(--accent); color: #fff; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px; white-space: nowrap; }
+  .iter-badge.final { background: #059669; }
+  .iter-title { font-size: 14.5px; font-weight: 700; }
+  .prompt-box { background: #f8f8f7; border-radius: 6px; padding: 16px 18px; font-size: 13.5px; line-height: 1.7; color: #333; margin-bottom: 16px; border-left: 3px solid var(--border); white-space: pre-wrap; }
+  .prompt-box strong { color: var(--text); }
+  .a-label { font-size: 12px; font-weight: 700; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .iter-card ul { margin: 0 0 14px 18px; font-size: 13.5px; line-height: 1.7; color: var(--text2); }
+  .iter-card ul li { margin-bottom: 3px; }
+  .diag-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  .diag-table th { background: #f8f8f7; padding: 9px 12px; text-align: left; font-weight: 600; font-size: 12px; color: var(--text2); border-bottom: 1px solid var(--border); }
+  .diag-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .diag-table tr:last-child td { border-bottom: none; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+  .summary-card { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 22px; }
+  .summary-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .summary-card table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .summary-card th { background: #f8f8f7; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 11.5px; color: var(--text2); border-bottom: 1px solid var(--border); }
+  .summary-card td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text2); }
+  .summary-card tr:last-child td { border-bottom: none; }
+
+  .insight-item { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
+  .insight-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .insight-item p { font-size: 14px; line-height: 1.7; margin: 0; }
+
+  /* 页脚 */
+  .footer { padding: 36px 0; text-align: center; font-size: 13px; color: #999; }
+
+  @media (max-width: 768px) {
+    .container { padding: 0 20px; }
+    .navbar-inner { padding: 0 20px; }
+    .hero { padding: 48px 0 36px; }
+    .hero h1 { font-size: 26px; }
+    .principles, .tech-grid, .summary-grid { grid-template-columns: 1fr; }
+    .principle { border-right: none; border-bottom: 1px solid var(--border); }
+    .principle:last-child { border-bottom: none; }
+    .flow-branches { flex-direction: column; }
+    .nav-item > a { padding: 0 12px; font-size: 13px; }
+  }
+  body.embed-mode .navbar { display: none !important; }
+  body.embed-mode { --bg:#F2F4F0; --text:#202722; --text2:#687069; --accent:#A3412E; --accent-light:#F5E8E4; --border:#D9DDD7; background:#F2F4F0; color:#202722; }
+  body.embed-mode .page { margin-left:0!important; background:#F2F4F0; }
+  body.embed-mode .container { max-width:1080px; padding-left:64px; padding-right:64px; }
+  body.embed-mode .hero { padding:54px 0 42px; background:#FBFCF9; border-color:#D9DDD7; }
+  body.embed-mode .hero .label, body.embed-mode .section-num { color:#A3412E; }
+  body.embed-mode .hero h1, body.embed-mode .section-header h2 { color:#202722; font-family:STZhongsong,"Songti SC",SimSun,serif; letter-spacing:-.5px; }
+  body.embed-mode .hero h1 { font-size:42px; }
+  body.embed-mode .section { padding:46px 0 62px; }
+  body.embed-mode .principles, body.embed-mode .tech-item, body.embed-mode .flow-steps, body.embed-mode .hl-box, body.embed-mode .iter-card, body.embed-mode .summary-card, body.embed-mode .compare-table { border-color:#D9DDD7; border-radius:5px; box-shadow:none; background:#FBFCF9; }
+  body.embed-mode .principle:hover, body.embed-mode .tech-item:hover { background:#F4F6F2; }
+  body.embed-mode .footer { background:#F2F4F0; color:#8C938C; }
+  @media(max-width:760px){body.embed-mode .container{padding-left:22px;padding-right:22px}body.embed-mode .hero{padding:38px 0 28px}body.embed-mode .hero h1{font-size:30px}}
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="navbar">
+  <div class="navbar-inner">
+    <div class="brand">Prompt Engineering</div>
+    <ul class="nav-list">
+      <li class="nav-item" data-task="task1">
+        <a href="#" onclick="return false">任务一 · 技巧全景图</a>
+        <div class="dropdown">
+          <a href="#" data-page="p-principles">核心原则</a>
+          <a href="#" data-page="p-basic">基础技巧</a>
+          <a href="#" data-page="p-advanced">进阶技巧</a>
+          <a href="#" data-page="p-structure">结构化技巧</a>
+          <a href="#" data-page="p-scenario">场景适配</a>
+          <a href="#" data-page="p-flow">决策流程</a>
+          <a href="#" data-page="p-mistakes">常见误区</a>
+        </div>
+      </li>
+      <li class="nav-item" data-task="task2">
+        <a href="#" onclick="return false">任务二 · 深度思考</a>
+        <div class="dropdown">
+          <a href="#" data-page="p2-intro">问题提出</a>
+          <a href="#" data-page="p2-core">核心判断</a>
+          <a href="#" data-page="p2-compare">零样本 vs 少样本</a>
+          <a href="#" data-page="p2-case">真实案例</a>
+          <a href="#" data-page="p2-essence">本质总结</a>
+          <a href="#" data-page="p2-conclusion">结语</a>
+        </div>
+      </li>
+      <li class="nav-item" data-task="task3">
+        <a href="#" onclick="return false">任务三 · 迭代实践</a>
+        <div class="dropdown">
+          <a href="#" data-page="p3-scene">场景说明</a>
+          <a href="#" data-page="p3-v1">第1轮 · 初稿</a>
+          <a href="#" data-page="p3-v2">第2轮 · 添加角色</a>
+          <a href="#" data-page="p3-v3">第3轮 · 细化约束</a>
+          <a href="#" data-page="p3-v4">第4轮 · 精稿</a>
+          <a href="#" data-page="p3-summary">迭代总结</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ==================== 任务一页面 ==================== -->
+
+<!-- 核心原则 -->
+<div class="page" id="p-principles">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>提示词优化技巧全景图</h1>
+    <p class="desc">从"为什么这样写会更好"到"不同场景该选哪种写法"——系统掌握提示词工程的三大核心原则。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">01</span><h2>三大核心原则 <span class="en">Core Principles</span></h2></div>
+    <div class="principles">
+      <div class="principle"><div class="num">01</div><h3>明确性</h3><div class="en-sub">Precision</div><p>消除歧义是第一要务。通过明确角色、任务边界、输出格式和约束条件，将模糊的自然语言转化为模型可精确执行的指令，核心在于减少模型的猜测空间。</p></div>
+      <div class="principle"><div class="num">02</div><h3>结构化</h3><div class="en-sub">Structure</div><p>好的提示词不是堆砌要求，而是设计一条清晰的思维路径。通过分步骤、分模块、分层次的组织方式，引导模型按照期望的逻辑顺序进行思考和输出。</p></div>
+      <div class="principle"><div class="num">03</div><h3>迭代性</h3><div class="en-sub">Iteration</div><p>提示词优化是"写→测→分析→改"的循环过程。每一次迭代都基于对模型输出偏差的诊断，逐步逼近最优表达，而非一次性写出完美提示词。</p></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 基础技巧 -->
+<div class="page" id="p-basic">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>基础技巧层</h1>
+    <p class="desc">提示词优化的四项基本功——角色设定、明确指令、格式约束、上下文提供。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">02</span><h2>基础技巧 <span class="en">Fundamentals</span></h2></div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-basic">基础</span><h4>角色设定 Role Prompting</h4></div><p class="tech-desc">为模型赋予特定身份和专业背景，激活对应的知识域和表达风格。</p><div class="tech-example"><strong>示例：</strong>"你是一位有10年经验的高级Python工程师，擅长编写高性能、可读性强的代码。请review以下代码..."</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-basic">基础</span><h4>明确指令 Clear Instruction</h4></div><p class="tech-desc">使用具体、无歧义的动词和描述，避免模糊表达。</p><div class="tech-example"><strong>对比：</strong>❌ "帮我看看这段代码" → ✅ "请检查以下Python代码中的潜在bug，列出问题位置、原因和修复建议"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-basic">基础</span><h4>输出格式约束 Format Control</h4></div><p class="tech-desc">指定输出的结构、长度、语言风格，确保结果可直接使用。</p><div class="tech-example"><strong>示例：</strong>"请以Markdown表格形式输出，包含三列：问题类型、严重程度（高/中/低）、修复建议。每条建议不超过50字。"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-basic">基础</span><h4>上下文提供 Context Giving</h4></div><p class="tech-desc">提供足够的背景信息，让模型在正确的语境下工作。</p><div class="tech-example"><strong>示例：</strong>"这是一个电商系统的订单模块，使用Spring Boot + MyBatis，数据库为MySQL。以下代码处理订单状态流转..."</div></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 进阶技巧 -->
+<div class="page" id="p-advanced">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>进阶技巧层</h1>
+    <p class="desc">少样本提示、思维链、自我反思、否定约束——让模型输出质量再上一个台阶。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">03</span><h2>进阶技巧 <span class="en">Advanced</span></h2></div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-advanced">进阶</span><h4>少样本提示 Few-Shot Prompting</h4></div><p class="tech-desc">通过提供1-3个输入输出示例，让模型快速理解期望的模式和风格。</p><div class="tech-example"><strong>示例：</strong>"将以下需求转化为用户故事：需求：用户能重置密码 → 用户故事：作为一名注册用户... 现在请转化：用户能查看订单历史 →"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-advanced">进阶</span><h4>思维链 Chain-of-Thought</h4></div><p class="tech-desc">引导模型逐步推理，而非直接给出答案，显著提升复杂问题的准确性。</p><div class="tech-example"><strong>示例：</strong>"请逐步分析这段代码的性能问题：第一步，识别时间复杂度最高的操作；第二步，分析空间复杂度；第三步，提出优化方案。"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-advanced">进阶</span><h4>自我反思 Self-Reflection</h4></div><p class="tech-desc">让模型检查自己的输出，发现并修正错误。</p><div class="tech-example"><strong>示例：</strong>"请先给出你的答案，然后重新审视：这个方案是否考虑了边界情况？是否有更优解？如果有，请修正。"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-advanced">进阶</span><h4>约束与否定 Negative Prompting</h4></div><p class="tech-desc">明确告诉模型"不要做什么"，防止常见偏差。</p><div class="tech-example"><strong>示例：</strong>"请解释这段代码的逻辑。注意：不要重写代码，不要添加新功能，不要改变原有架构，只做分析和说明。"</div></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 结构化技巧 -->
+<div class="page" id="p-structure">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>结构化技巧层</h1>
+    <p class="desc">模板化提示、分步拆解、分隔符标记——用结构驾驭复杂性。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">04</span><h2>结构化技巧 <span class="en">Structured Methods</span></h2></div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-structure">结构化</span><h4>模板化提示 Template Prompt</h4></div><p class="tech-desc">建立可复用的提示词模板，通过填空方式快速生成高质量提示。</p><div class="tech-example"><strong>模板：</strong>[角色] + [背景] + [任务] + [约束] + [输出格式]<br>"作为{角色}，在{背景}下，请完成{任务}。要求：{约束}。输出格式：{格式}"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-structure">结构化</span><h4>分步拆解 Task Decomposition</h4></div><p class="tech-desc">将复杂任务拆分为多个子任务，逐步引导模型完成。</p><div class="tech-example"><strong>示例：</strong>"第一步：分析需求，列出所有功能点；第二步：设计数据库表结构；第三步：编写API接口定义；第四步：给出核心业务逻辑的伪代码。"</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-structure">结构化</span><h4>分隔符标记 Delimiter Usage</h4></div><p class="tech-desc">使用特殊符号清晰分隔不同部分，帮助模型解析复杂输入。</p><div class="tech-example"><strong>示例：</strong>"请分析以下代码：\n```\n[代码内容]\n```\n---\n要求：1) 找出bug 2) 给出修复方案 3) 评估安全风险"</div></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 场景适配 -->
+<div class="page" id="p-scenario">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>场景适配技巧层</h1>
+    <p class="desc">不同场景需要不同的技巧组合——创意、分析、代码、问答各有策略。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">05</span><h2>场景适配 <span class="en">Scenario-Based</span></h2></div>
+    <div class="tech-grid">
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-scenario">场景</span><h4>创意生成场景</h4></div><p class="tech-desc">需要发散思维时，降低约束、增加温度参数、提供灵感方向。</p><div class="tech-example"><strong>策略：</strong>减少格式约束，使用"请给出5种不同方案"等开放式指令，配合"大胆创新""跳出常规"等引导词。</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-scenario">场景</span><h4>精确分析场景</h4></div><p class="tech-desc">需要严谨推理时，强化约束、要求分步论证、设置验证环节。</p><div class="tech-example"><strong>策略：</strong>使用思维链+自我反思组合，要求"每一步给出依据"，设置"如果不确定请明确标注"。</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-scenario">场景</span><h4>代码生成场景</h4></div><p class="tech-desc">需要可运行代码时，明确技术栈、边界条件、错误处理和测试要求。</p><div class="tech-example"><strong>策略：</strong>指定语言版本、框架版本、输入输出示例、异常处理要求，并附加"请同时给出单元测试"。</div></div>
+      <div class="tech-item"><div class="tech-head"><span class="tech-tag tag-scenario">场景</span><h4>知识问答场景</h4></div><p class="tech-desc">需要准确知识时，限定知识范围、要求标注不确定性、提供参考资料。</p><div class="tech-example"><strong>策略：</strong>"请基于2024年之前的知识回答"，"如果不确定请说明"，"请区分事实和推测"。</div></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 决策流程 -->
+<div class="page" id="p-flow">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>技巧选择决策流程</h1>
+    <p class="desc">面对不同任务类型，如何选择合适的技巧组合？三步决策法帮你快速判断。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">06</span><h2>决策流程 <span class="en">Decision Flow</span></h2></div>
+    <div class="flow-steps">
+      <div class="flow-row"><div class="flow-dot">1</div><div class="flow-content"><h4>判断任务类型</h4><p>根据任务性质选择合适的技巧组合方向</p><div class="flow-branches"><div class="flow-branch"><strong>创意/发散</strong> → 减少约束 + 多方案指令</div><div class="flow-branch"><strong>精确/分析</strong> → 思维链 + 自我反思</div><div class="flow-branch"><strong>代码/执行</strong> → 角色设定 + 格式约束</div></div></div></div>
+      <div class="flow-row"><div class="flow-dot purple">2</div><div class="flow-content"><h4>评估模型输出</h4><p>根据输出质量决定下一步调整策略</p><div class="flow-branches"><div class="flow-branch"><strong>符合预期</strong> → 保存为模板，后续复用</div><div class="flow-branch"><strong>偏离方向</strong> → 加强约束 / 添加否定提示</div><div class="flow-branch"><strong>质量不稳</strong> → 添加少样本示例对齐模式</div></div></div></div>
+      <div class="flow-row"><div class="flow-dot green">3</div><div class="flow-content"><h4>持续迭代，形成专属提示词库</h4><p>将验证有效的提示词按场景分类存档，建立个人提示词模板库，逐步提升每次交互的起点质量。</p></div></div>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- 常见误区 -->
+<div class="page" id="p-mistakes">
+  <div class="hero"><div class="container">
+    <div class="label">任务一 · 理论可视化实验</div>
+    <h1>常见误区 vs 正确做法</h1>
+    <p class="desc">避开这些坑，提示词质量立竿见影。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">07</span><h2>常见误区 <span class="en">Mistakes &amp; Fixes</span></h2></div>
+    <table class="compare-table">
+      <thead><tr><th style="width:28%">误区</th><th style="width:28%">正确做法</th><th>原因</th></tr></thead>
+      <tbody>
+        <tr><td class="wrong">提示词越长越好</td><td class="right">精准比冗长更重要</td><td>过多信息会分散模型注意力，关键信息被淹没</td></tr>
+        <tr><td class="wrong">一次就能写出完美提示词</td><td class="right">迭代优化是常态</td><td>需要根据输出结果诊断问题、针对性调整</td></tr>
+        <tr><td class="wrong">所有场景用同一套模板</td><td class="right">根据场景选择技巧组合</td><td>创意场景需要开放，分析场景需要约束</td></tr>
+        <tr><td class="wrong">只告诉模型"做什么"</td><td class="right">同时说明"不做什么"</td><td>否定约束能有效防止常见偏差</td></tr>
+        <tr><td class="wrong">忽略输出格式</td><td class="right">明确指定输出结构</td><td>格式约束让结果可直接使用，减少后处理</td></tr>
+        <tr><td class="wrong">不给示例直接提问</td><td class="right">复杂任务提供1-3个示例</td><td>少样本提示能快速对齐期望的输出模式</td></tr>
+      </tbody>
+    </table>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- ==================== 任务二页面 ==================== -->
+
+<div class="page" id="p2-intro">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>提示词写得好，到底好在哪里？</h1>
+    <p class="desc">关于"提示词优化本质"的深度思考——从日常使用中的困惑出发，追问底层逻辑。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <h3>问题的提出</h3>
+    <p>在接触提示词工程之前，我和很多人一样，对大模型的使用停留在"问一句、答一句"的层面。同样的问题，有时模型给出令人惊艳的回答，有时却答非所问。起初我以为是模型"状态不稳定"，但随着对提示词优化的深入学习，我逐渐意识到：<strong>输出质量的巨大差异，根源不在于模型，而在于我们向模型传递信息的方式。</strong></p>
+    <p>这就引出了一个核心问题：提示词优化的本质，到底是在优化什么？</p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p2-core">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>核心判断</h1>
+    <p class="desc">提示词优化的本质是"信息的定向压缩"——三层含义逐步展开。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p>经过学习和实践，我认为提示词优化的本质既不是单纯的语言表达美化，也不仅仅是任务描述的细化——<strong>它的本质是通过精心设计的语言结构，将人类意图中的"高熵信息"压缩为模型可高效解码的"低信号"，从而在模型的庞大可能性空间中精准锁定目标输出区域。</strong></p>
+    <div class="hl-box"><h4>第一层：从"模糊意图"到"精确信号"</h4><p>人类的自然语言天生充满歧义。当我们说"帮我看看这段代码"时，这句话的信息熵极高——它可能意味着找bug、评估性能、检查安全漏洞、审查代码风格，甚至只是想要一个概括性描述。模型面对这样的输入，需要在巨大的输出空间中"猜测"你的真实意图。</p><p>好的提示词所做的，就是通过角色设定、任务明确、格式约束等手段，<strong>逐步消除歧义，将可能性空间从"无限"压缩到"有限"</strong>。这就像在黑暗中打开一盏探照灯——不是照亮整个房间，而是精准地照向你想要看的那个角落。</p></div>
+    <div class="hl-box"><h4>第二层：从"一次性描述"到"结构化引导"</h4><p>仅仅消除歧义还不够。模型处理信息的方式与人类不同——它没有真正的"理解"，只有基于统计模式的"预测"。因此，好的提示词不仅要告诉模型"做什么"，更要设计一条<strong>思维路径</strong>，引导模型按照我们期望的顺序和方式进行推理。</p><p>这就是为什么思维链（Chain-of-Thought）如此有效：它不是在改变模型的能力，而是在改变模型的<strong>推理轨迹</strong>。就像给一个能力很强但方向感不好的人一张详细的地图——能力没变，但到达目的地的概率大幅提升。</p></div>
+    <div class="hl-box"><h4>第三层：从"静态指令"到"动态对话"</h4><p>提示词优化不是一次性的编码工作，而是一个动态的反馈循环。每一次模型输出都是一次"信号返回"，告诉我们当前的提示词在哪些维度上产生了偏差。优秀的提示词工程师像一个调音师——不是盲目地拧旋钮，而是<strong>听辨偏差、定位问题、精准调整</strong>。</p></div>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p2-compare">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>零样本 vs 少样本</h1>
+    <p class="desc">场景复杂度还是模型能力边界？更深层的原因是"模式对齐"的需求程度。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p>课程中提到了零样本提示与少样本提示的选择问题。我的判断是：<strong>这既与场景复杂度有关，也与模型能力边界有关，但更深层的原因是"模式对齐"的需求程度。</strong></p>
+    <ul><li><strong>零样本提示</strong>适用于模型已有充分训练知识的任务。模型"见过"足够多的类似场景，能够直接从指令中推断出期望的输出模式。</li><li><strong>少样本提示</strong>的核心价值不在于"教"模型新知识，而在于<strong>对齐输出模式</strong>——告诉模型"我要的是这种风格、这种结构、这种粒度的回答"。</li></ul>
+    <p>在编程开发场景中，这个区别尤为明显。让模型"写一个排序函数"，零样本即可；但让模型"按照我们团队的代码规范，以特定的注释风格，生成包含完整单元测试的排序函数"，少样本示例几乎是必需的——因为"我们团队的风格"是模型训练数据中不存在的特定模式。</p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p2-case">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>真实案例</h1>
+    <p class="desc">"换一种写法，输出完全不同"——编程开发中的切身体验。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p>在实际编程开发中，我深刻体验过"换一种写法，输出天差地别"的情况。<strong>场景</strong>：让模型帮我重构一段遗留代码。</p>
+    <div class="hl-box"><h4>初版提示词</h4><p>"帮我重构这段代码，让它更好。"</p><p><strong>结果：</strong>模型做了一些表面的变量重命名，核心架构毫无改变，还引入了一些不必要的抽象。</p></div>
+    <div class="hl-box"><h4>优化版提示词</h4><p>"你是一位资深后端工程师。以下是一段处理用户订单的遗留代码（Java 8，Spring Boot 2.x）。请进行重构，要求：1. 将God Class拆分为职责单一的服务类；2. 使用策略模式替代代码中的12个if-else分支；3. 保持原有API接口不变，确保向后兼容；4. 每个重构步骤说明设计理由；5. 输出重构前后的对比分析"</p><p><strong>结果：</strong>模型给出了结构清晰、设计合理、可直接使用的重构方案，每一步都有充分的设计理由。</p></div>
+    <p><strong>背后的原因分析：</strong>初版提示词的问题不在于"信息量少"，而在于<strong>信息结构混乱</strong>——"更好"是一个没有明确定义的目标函数。优化版提示词做了三件关键的事：<strong>锚定了评价标准</strong>（策略模式、单一职责、向后兼容）、<strong>限定了搜索空间</strong>（不改变API、使用特定设计模式）、<strong>规定了输出结构</strong>（分步骤、带理由、有对比）。这三件事的本质，都是在"可能性空间"中划定边界。</p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p2-essence">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>本质总结</h1>
+    <p class="desc">提示词优化的本质，是在优化"人-机信息传递的信道效率"。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p>回到最初的问题。经过以上分析，我的结论是：</p>
+    <blockquote><p><strong>提示词优化的本质，是在优化"人-机信息传递的信道效率"。</strong></p></blockquote>
+    <p>它不是在优化语言本身（虽然好的表达是手段），也不是在优化模型（模型是固定的），而是在优化<strong>人类意图到模型输出之间的映射精度</strong>。</p>
+    <p>具体而言，它在优化三个维度：</p>
+    <ol><li><strong>意图清晰度</strong>——模型能否准确理解你要什么</li><li><strong>推理引导力</strong>——模型能否按照你期望的路径思考</li><li><strong>输出可控性</strong>——模型的输出能否直接满足你的使用需求</li></ol>
+    <p>这三个维度的优化，最终都服务于一个目标：<strong>降低人机协作中的"翻译损耗"，让模型的强大能力能够被精准地释放到你真正需要的地方。</strong></p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p2-conclusion">
+  <div class="hero"><div class="container">
+    <div class="label">任务二 · 深度思考写作</div>
+    <h1>结语</h1>
+    <p class="desc">提示词工程不是"玄学"，而是一门有规律可循的实践科学。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p>提示词工程不是"玄学"，而是一门有规律可循的实践科学。它的底层逻辑并不复杂——<strong>你说得越清楚，模型做得越准确；你引导得越巧妙，模型发挥得越出色。</strong>但要把这个简单的道理转化为每一次交互中的高质量提示词，需要持续的练习、反思和积累。</p>
+    <p>正如课程所强调的：提示词优化是一个迭代过程。每一次"写→测→分析→改"的循环，都是对"人-机信息传递信道"的一次校准。当我们积累了足够的校准经验，就能在面对任何场景时，快速构建出高质量的提示词——这才是提示词工程的真正价值所在。</p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<!-- ==================== 任务三页面 ==================== -->
+
+<div class="page" id="p3-scene">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 工具深度探索实践</div>
+    <h1>场景说明</h1>
+    <p class="desc">以"用户认证与权限管理模块设计"为场景，完成提示词从初稿到精稿的完整迭代。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;"><div class="article">
+    <p><strong>背景：</strong>我正在开发一个基于 Spring Boot 的电商后台管理系统，需要设计用户认证与权限管理模块。该模块需要支持：用户注册/登录（JWT）、角色管理（RBAC）、接口级权限控制、操作日志记录。</p>
+    <p><strong>目标：</strong>借助大模型，完成该模块的完整技术方案设计，包括数据库设计、API 接口定义、核心业务流程和关键代码实现。</p>
+    <p><strong>迭代路线：</strong>共4轮，从模糊的零样本提示逐步迭代到包含少样本示例、格式约束、测试要求的精稿。</p>
+  </div></div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p3-v1">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 第1轮</div>
+    <h1>初稿 — 零样本，模糊指令</h1>
+    <p class="desc">最原始的提问方式，看看模型会给出什么。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="iter-card">
+      <div class="iter-head"><span class="iter-badge">v1</span><span class="iter-title">提示词</span></div>
+      <div class="prompt-box">帮我设计一个用户认证和权限管理的模块。</div>
+      <div class="a-label">模型输出分析</div>
+      <ul><li>给出了一个非常泛泛的概述，提到了 JWT、RBAC 等概念</li><li>没有数据库表设计，没有具体的 API 接口定义，没有代码实现</li><li>内容像教科书式的概念介绍，无法直接使用</li></ul>
+      <div class="a-label">问题诊断</div>
+      <table class="diag-table"><thead><tr><th>问题</th><th>原因</th></tr></thead><tbody><tr><td>输出过于泛泛</td><td>没有指定技术栈和项目背景</td></tr><tr><td>缺少具体设计</td><td>没有明确输出要求</td></tr><tr><td>无法直接使用</td><td>没有规定输出格式和粒度</td></tr></tbody></table>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p3-v2">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 第2轮</div>
+    <h1>添加角色设定 + 技术栈 + 输出要求</h1>
+    <p class="desc">从模糊走向具体，但仍有明显不足。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="iter-card">
+      <div class="iter-head"><span class="iter-badge">v2</span><span class="iter-title">提示词</span></div>
+      <div class="prompt-box">你是一位资深Java后端工程师。我正在开发一个Spring Boot电商后台管理系统，需要设计用户认证与权限管理模块。请给出：
+1. 数据库表设计
+2. API接口列表
+3. 核心代码</div>
+      <div class="a-label">模型输出分析</div>
+      <ul><li>比 v1 好了很多，给出了具体的表结构和 API 列表</li><li>数据库设计基本合理，但缺少索引设计和字段约束说明</li><li>API 接口只列了路径和方法，没有请求/响应格式</li><li>核心代码只给了一个登录方法的片段，不完整</li><li>没有考虑操作日志和安全审计</li></ul>
+      <div class="a-label">问题诊断</div>
+      <table class="diag-table"><thead><tr><th>问题</th><th>原因</th></tr></thead><tbody><tr><td>表设计不够完整</td><td>没有要求给出字段类型、约束、索引</td></tr><tr><td>API 定义不够详细</td><td>没有要求请求/响应示例</td></tr><tr><td>代码不完整</td><td>没有明确要哪些核心代码</td></tr><tr><td>遗漏功能</td><td>没有提到操作日志和安全审计的要求</td></tr></tbody></table>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p3-v3">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 第3轮</div>
+    <h1>细化输出格式 + 补充功能要求 + 添加约束</h1>
+    <p class="desc">质量明显提升，但代码风格和对齐仍有差距。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="iter-card">
+      <div class="iter-head"><span class="iter-badge">v3</span><span class="iter-title">提示词</span></div>
+      <div class="prompt-box">你是一位有5年经验的Java后端架构师，精通Spring Boot和Spring Security。我正在开发一个电商后台管理系统（Spring Boot 3.x + MyBatis-Plus + MySQL 8.0），需要设计用户认证与权限管理模块。
+
+模块需求：
+- 用户注册/登录，使用JWT Token认证
+- RBAC角色权限管理（用户-角色-权限三级模型）
+- 接口级权限控制（基于注解）
+- 操作日志记录
+
+请按以下结构输出：
+1. 数据库设计：给出所有表的DDL语句，包含字段类型、约束、索引、注释
+2. API接口定义：每个接口给出路径、方法、请求参数示例、响应格式示例
+3. 核心代码：JWT工具类、登录Service、权限拦截器的完整实现
+4. 安全考虑：列出需要注意的安全问题和应对措施
+
+注意：不要使用Spring Security的默认配置，我们要自定义实现。代码要包含完整的异常处理。</div>
+      <div class="a-label">模型输出分析</div>
+      <ul><li>数据库设计非常详细，DDL 可直接执行</li><li>API 接口定义清晰，有请求/响应示例</li><li>核心代码质量明显提升，有异常处理</li><li>但代码风格与团队规范不完全一致，缺少单元测试</li></ul>
+      <div class="a-label">问题诊断</div>
+      <table class="diag-table"><thead><tr><th>问题</th><th>原因</th></tr></thead><tbody><tr><td>代码风格不一致</td><td>没有提供团队代码规范示例</td></tr><tr><td>缺少单元测试</td><td>没有要求</td></tr><tr><td>部分设计偏复杂</td><td>没有说明项目规模</td></tr></tbody></table>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p3-v4">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 第4轮 · 精稿</div>
+    <h1>添加少样本示例 + 调整粒度 + 补充测试要求</h1>
+    <p class="desc">最终版本——可直接用于项目开发的完整提示词。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="iter-card">
+      <div class="iter-head"><span class="iter-badge final">v4 精稿</span><span class="iter-title">提示词（最终版）</span></div>
+      <div class="prompt-box">你是一位有5年经验的Java后端架构师，精通Spring Boot和Spring Security。我正在开发一个中型电商后台管理系统（Spring Boot 3.x + MyBatis-Plus + MySQL 8.0 + JDK 17），团队规模5人，需要设计用户认证与权限管理模块。
+
+【模块需求】
+- 用户注册/登录，使用JWT Token认证（Token有效期2h，Refresh Token 7天）
+- RBAC角色权限管理（用户-角色-权限三级模型）
+- 接口级权限控制（基于自定义注解 @RequirePermission）
+- 操作日志记录（操作人、时间、内容、IP地址）
+
+【代码规范示例】请遵循以下团队代码风格：
+@Service @Slf4j @RequiredArgsConstructor
+public class UserService {
+    private final UserMapper userMapper;
+    public UserDTO getUserById(Long userId) { ... }
+}
+
+【输出要求】
+1. 数据库设计：所有表的DDL（含字段类型、NOT NULL、默认值、索引、COMMENT）
+2. API接口定义：表格形式，含路径、HTTP方法、功能描述、请求/响应体JSON示例、权限要求
+3. 核心代码（完整可运行）：JwtUtil / AuthService / PermissionInterceptor / @RequirePermission / LogAspect
+4. 单元测试：AuthService 登录方法3个测试用例（正常/密码错误/用户不存在）
+5. 安全清单：至少5条安全问题及应对措施
+
+【约束】不使用Spring Security默认配置；BCrypt加密；统一返回 Result&lt;T&gt;；自定义 BusinessException；完整异常处理和日志；不使用已废弃API。</div>
+      <div class="a-label">模型输出分析</div>
+      <ul><li>数据库 DDL 完整、规范，可直接在 MySQL 中执行</li><li>API 表格清晰，请求/响应示例与团队 Result 包装类一致</li><li>核心代码风格与团队规范完全对齐，注释格式统一</li><li>单元测试覆盖了正常和异常场景，安全清单具体且可操作</li><li>整体方案可直接用于项目开发</li></ul>
+    </div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<div class="page" id="p3-summary">
+  <div class="hero"><div class="container">
+    <div class="label">任务三 · 迭代总结</div>
+    <h1>迭代优化总结</h1>
+    <p class="desc">四轮迭代的技巧应用分析与核心心得。</p>
+  </div></div>
+  <div class="container"><div class="section" style="border-bottom:none;">
+    <div class="section-header"><span class="section-num">总结</span><h2>迭代对照与技巧分析 <span class="en">Summary</span></h2></div>
+    <div class="summary-grid">
+      <div class="summary-card"><h4>每轮改进对照</h4><table><thead><tr><th>迭代</th><th>核心改进</th><th>使用技巧</th><th>效果</th></tr></thead><tbody><tr><td>v1→v2</td><td>角色+技术栈+结构</td><td>角色设定+明确指令</td><td>概念→具体设计</td></tr><tr><td>v2→v3</td><td>格式+功能+约束</td><td>格式约束+否定提示</td><td>可用→较完整</td></tr><tr><td>v3→v4</td><td>示例+测试+粒度</td><td>少样本+分步拆解</td><td>较完整→可直接用</td></tr></tbody></table></div>
+      <div class="summary-card"><h4>技巧应用分析</h4><table><thead><tr><th>技巧</th><th>轮次</th><th>作用</th></tr></thead><tbody><tr><td>角色设定</td><td>v2</td><td>激活专业知识域</td></tr><tr><td>明确指令</td><td>v2-v4</td><td>消除歧义</td></tr><tr><td>输出格式约束</td><td>v3-v4</td><td>确保结构统一</td></tr><tr><td>否定提示</td><td>v3-v4</td><td>防止偏差</td></tr><tr><td>少样本提示</td><td>v4</td><td>对齐代码风格</td></tr><tr><td>分步拆解</td><td>v3-v4</td><td>拆分复杂任务</td></tr><tr><td>上下文提供</td><td>v2-v4</td><td>锁定技术语境</td></tr></tbody></table></div>
+    </div>
+    <h3 style="margin-top:32px;">核心心得</h3>
+    <div class="insight-item"><div class="insight-num">1</div><p><strong>提示词优化是一个"逐步缩小可能性空间"的过程</strong>——每一轮迭代都在消除一类不确定性</p></div>
+    <div class="insight-item"><div class="insight-num">2</div><p><strong>少样本提示是"最后一公里"的关键</strong>——当基础设计已经到位，代码风格的对齐靠少样本示例最高效</p></div>
+    <div class="insight-item"><div class="insight-num">3</div><p><strong>否定约束和正向约束同样重要</strong>——告诉模型"不要用什么"和"要用什么"同等关键</p></div>
+    <div class="insight-item"><div class="insight-num">4</div><p><strong>迭代不是简单的"加要求"</strong>——每一轮都应该基于上一轮输出的具体问题来针对性调整，而非盲目堆砌</p></div>
+  </div></div>
+  <div class="footer">提示词优化技巧全景图 · 课后作业</div>
+</div>
+
+<script>
+  if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embed-mode');
+  // 页面切换
+  const pages = document.querySelectorAll('.page');
+  const navItems = document.querySelectorAll('.nav-item');
+  const dropdownLinks = document.querySelectorAll('.dropdown a');
+
+  function showPage(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(pageId);
+    if (target) {
+      target.classList.add('active');
+      window.scrollTo(0, 0);
+    }
+    // 更新下拉菜单高亮
+    dropdownLinks.forEach(a => {
+      a.classList.toggle('current', a.dataset.page === pageId);
+    });
+    // 更新导航栏 active
+    navItems.forEach(item => {
+      const links = item.querySelectorAll('.dropdown a');
+      const hasActive = [...links].some(a => a.dataset.page === pageId);
+      item.classList.toggle('active', hasActive);
+    });
+  }
+
+  dropdownLinks.forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      showPage(a.dataset.page);
+    });
+  });
+
+  // 默认显示第一个页面
+  showPage('p-principles');
+</script>
+
+</body>
+</html>

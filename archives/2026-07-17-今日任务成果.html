@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>第四天课后作业｜提示词优化三任务完整版</title>
+<style>
+  :root {
+    --bg:#f4f6f7; --paper:#fff; --ink:#18242d; --muted:#64717b; --line:#dfe5e8;
+    --navy:#15364d; --teal:#087b74; --teal-soft:#e7f4f2; --amber:#c97818;
+    --amber-soft:#fff4e4; --red:#b94b42; --red-soft:#fff0ee; --blue:#356b95;
+    --side:286px; --radius:16px; --shadow:0 12px 35px rgba(21,54,77,.07);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+  button{font:inherit}
+  a{color:inherit}
+  .sidebar{position:fixed;inset:0 auto 0 0;width:var(--side);z-index:30;display:flex;flex-direction:column;padding:25px 20px;background:#fff;border-right:1px solid var(--line);overflow:auto}
+  .brand{display:flex;align-items:center;gap:12px;padding:0 5px 22px;border-bottom:1px solid var(--line)}
+  .brand-mark{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;font-weight:850;letter-spacing:.5px;box-shadow:0 8px 18px rgba(21,54,77,.2)}
+  .brand strong{display:block;font-size:14px}.brand small{display:block;color:#89949c;font-size:11px;margin-top:1px}
+  .date-label{margin:22px 7px 10px;color:#8a949c;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+  .date-group{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fbfcfc}
+  .date-head{display:flex;align-items:center;justify-content:space-between;padding:13px 14px;background:var(--navy);color:#fff}
+  .date-head strong{font-size:13px}.date-head span{font-size:10px;opacity:.7;letter-spacing:.5px}
+  .nav-list{display:grid;gap:3px;padding:8px;margin:0;list-style:none}
+  .nav-link{width:100%;display:grid;grid-template-columns:28px 1fr;gap:9px;align-items:center;padding:9px;border:0;border-radius:9px;background:transparent;color:#53616c;text-align:left;cursor:pointer}
+  .nav-link:hover{background:#eef3f5;color:var(--navy)}
+  .nav-link.active{background:var(--teal-soft);color:#075e59;font-weight:700}
+  .nav-num{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#e9eef1;color:#61717d;font-size:10px;font-weight:800}
+  .nav-link.active .nav-num{background:var(--teal);color:#fff}
+  .nav-copy strong{display:block;font-size:12.5px}.nav-copy small{display:block;margin-top:-1px;color:#8b969e;font-size:10px;font-weight:500}
+  .side-note{margin:16px 7px 0;color:#909aa1;font-size:10.5px;line-height:1.6}
+  .side-actions{display:grid;gap:8px;margin-top:auto;padding:24px 3px 0}
+  .side-actions button{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;color:#52616c;cursor:pointer}
+  .side-actions button:hover{background:#f1f5f6;color:var(--navy)}
+  .mobile-bar,.mobile-drawer{display:none}
+
+  .page{display:none;margin-left:var(--side);min-height:100vh}
+  .page.active{display:block;animation:fade .18s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+  .page-head{padding:48px 52px 34px;background:#f9fbfb;border-bottom:1px solid var(--line)}
+  .page-head-inner,.content{max-width:1080px;margin:0 auto}
+  .eyebrow{display:flex;align-items:center;gap:8px;color:var(--teal);font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--teal)}
+  h1{margin:12px 0 12px;color:var(--navy);font-size:clamp(30px,4vw,46px);line-height:1.18;letter-spacing:-1.4px}
+  .lead{max-width:780px;margin:0;color:var(--muted);font-size:15px;line-height:1.8}
+  .content{padding:38px 52px 70px}
+  .section{margin-bottom:42px;scroll-margin-top:24px}
+  .section:last-child{margin-bottom:0}
+  .section-title{display:flex;gap:13px;align-items:flex-start;margin-bottom:18px}
+  .section-index{flex:none;color:var(--teal);font:800 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;padding-top:5px}
+  .section-title h2{margin:0;color:var(--navy);font-size:21px;line-height:1.4}
+  .section-title p{margin:3px 0 0;color:#849099;font-size:12px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .pad{padding:24px}
+  .callout{padding:18px 20px;border-left:4px solid var(--teal);border-radius:0 12px 12px 0;background:var(--teal-soft);color:#285752}
+  .callout strong{color:#075e59}
+  .callout.amber{border-color:var(--amber);background:var(--amber-soft);color:#6d502e}.callout.amber strong{color:#8b510d}
+  .quote{margin:0;padding:24px 26px;border:1px solid #cfe1df;border-radius:14px;background:#f5fbfa;color:#214c48;font-size:17px;font-weight:650;line-height:1.8}
+  .muted{color:var(--muted)}
+  .tag{display:inline-flex;align-items:center;padding:3px 8px;border-radius:99px;background:var(--teal-soft);color:#08645f;font-size:10.5px;font-weight:750}
+  .tag.amber{background:var(--amber-soft);color:#95570e}.tag.red{background:var(--red-soft);color:#9a3e37}.tag.blue{background:#eaf2f8;color:#2d6289}
+  .grid-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+  .prose{max-width:820px}.prose h3{margin:30px 0 10px;color:var(--navy);font-size:17px}.prose p{margin:0 0 14px}.prose ul,.prose ol{margin:8px 0 16px;padding-left:22px}.prose li{margin-bottom:7px}
+  .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+  table{width:100%;border-collapse:collapse;min-width:680px}
+  th{padding:11px 13px;background:#f1f4f5;color:#596873;text-align:left;font-size:11px;white-space:nowrap}
+  td{padding:12px 13px;border-top:1px solid var(--line);vertical-align:top;color:#42515c;font-size:12.5px}
+  tr:hover td{background:#fbfcfc}
+
+  /* 作业一：结构图 */
+  .prompt-full{position:relative;padding:22px 24px 22px 28px;background:#172630;color:#e8f1f4;border-radius:14px;font-size:13px;line-height:1.9;box-shadow:0 14px 32px rgba(12,32,44,.14)}
+  .prompt-full::before{content:"最终提示词";position:absolute;right:16px;top:14px;color:#87a7b5;font-size:10px;font-weight:700;letter-spacing:1px}
+  .prompt-full .k{color:#76d2ca;font-weight:700}.prompt-full .v{color:#fff}.prompt-full .n{color:#f2be78}
+  .anatomy{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;position:relative}
+  .module{position:relative;min-height:184px;padding:18px;border:1px solid var(--line);border-top:4px solid var(--teal);border-radius:14px;background:#fff}
+  .module:nth-child(2),.module:nth-child(6){border-top-color:var(--amber)}
+  .module:nth-child(3),.module:nth-child(7){border-top-color:var(--blue)}
+  .module:nth-child(4),.module:nth-child(8){border-top-color:var(--red)}
+  .module b{display:block;margin:8px 0 7px;color:var(--navy);font-size:14px}.module p{margin:0;color:var(--muted);font-size:11.5px;line-height:1.65}
+  .module .example{margin-top:11px;padding-top:9px;border-top:1px dashed var(--line);color:#42545f;font-size:11px}
+  .module::after{content:"→";position:absolute;right:-11px;top:50%;z-index:2;color:#aeb9c0;font-weight:800}
+  .module:nth-child(4)::after,.module:nth-child(8)::after{display:none}
+  .formula{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:18px;border:1px dashed #b9cbcf;border-radius:13px;background:#f8fbfb}
+  .formula span{padding:7px 10px;border-radius:8px;background:#fff;border:1px solid var(--line);color:#41515c;font-size:11.5px}.formula i{color:#95a3ab;font-style:normal}
+  .check-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .check{padding:13px 14px;border:1px solid var(--line);border-radius:11px;background:#fff}.check b{display:block;color:var(--navy);font-size:12.5px}.check span{display:block;margin-top:3px;color:#76838c;font-size:11px}
+
+  /* 作业二 */
+  .world-compare{display:grid;grid-template-columns:1fr 54px 1fr;align-items:stretch}
+  .world{padding:22px;border:1px solid var(--line);border-radius:14px;background:#fff}.world.bad{border-top:4px solid #9ba6ad}.world.good{border-top:4px solid var(--teal)}
+  .world h3{margin:8px 0 10px;color:var(--navy);font-size:16px}.world p{margin:0 0 11px;font-size:12.5px}.world .result{padding:12px;border-radius:9px;background:#f4f6f7;color:#5d6b75}
+  .world-arrow{display:grid;place-items:center;color:#94a1a9;font-size:22px}
+  .diagnosis{display:grid;grid-template-columns:150px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .diag-steps{background:#f1f5f5}.diag-step{padding:15px;border-bottom:1px solid var(--line);color:#62717b;font-size:12px;font-weight:700}.diag-step:last-child{border-bottom:0}.diag-step.active{background:var(--teal);color:#fff}
+  .diag-body{padding:22px}.diag-body h3{margin:0 0 10px;color:var(--navy);font-size:16px}.diag-body p{margin:0 0 10px}.diag-body ul{margin:0;padding-left:18px}
+
+  /* 作业三 */
+  .project-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:14px;background:#fff;overflow:hidden}
+  .project-stat{padding:16px 18px;border-right:1px solid var(--line)}.project-stat:last-child{border-right:0}.project-stat b{display:block;color:var(--navy);font-size:15px}.project-stat span{color:#849099;font-size:10.5px}
+  .video-deliverable{overflow:hidden;border:1px solid #274758;border-radius:16px;background:#0B1821;box-shadow:0 18px 44px rgba(11,24,33,.18)}
+  .video-deliverable video{display:block;width:100%;aspect-ratio:16/9;background:#0B1821}
+  .video-meta{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 18px;color:#D8E6E9}
+  .video-meta b{display:block;font-size:13px}.video-meta span{color:#91A8B1;font-size:10.5px}.video-meta .video-badge{flex:none;padding:5px 9px;border-radius:99px;background:#1A8F87;color:#fff;font-size:10px;font-weight:800}
+  .storyboard{display:grid;grid-template-columns:repeat(5,minmax(160px,1fr));gap:10px;overflow:auto;padding-bottom:5px}
+  .shot-card{min-width:160px;overflow:hidden;border:1px solid var(--line);border-radius:13px;background:#fff}
+  .shot-visual{position:relative;height:118px;padding:13px;background:linear-gradient(145deg,#183447,#42677a);color:#fff}
+  .shot-card:nth-child(2) .shot-visual{background:linear-gradient(145deg,#243d4d,#6b7780)}
+  .shot-card:nth-child(3) .shot-visual{background:linear-gradient(145deg,#343a43,#8a6656)}
+  .shot-card:nth-child(4) .shot-visual{background:linear-gradient(145deg,#1c3445,#b27a3b)}
+  .shot-card:nth-child(5) .shot-visual{background:linear-gradient(145deg,#6f8590,#e0b978)}
+  .shot-visual::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(103deg,transparent 0 12px,rgba(255,255,255,.16) 13px,transparent 14px);opacity:.6}
+  .shot-no{position:relative;z-index:1;font-size:10px;font-weight:800;letter-spacing:1px}.shot-scene{position:absolute;left:13px;right:13px;bottom:12px;z-index:1;font-size:12px;font-weight:700;line-height:1.35}
+  .shot-info{padding:12px}.shot-info b{display:block;color:var(--navy);font-size:12px}.shot-info p{margin:4px 0 0;color:#71808a;font-size:10.5px;line-height:1.55}
+  details.prompt-detail{margin-bottom:10px;border:1px solid var(--line);border-radius:13px;background:#fff;overflow:hidden}
+  details.prompt-detail[open]{box-shadow:var(--shadow)}
+  .prompt-detail summary{display:flex;align-items:center;gap:10px;padding:14px 17px;cursor:pointer;list-style:none;color:var(--navy);font-weight:750}.prompt-detail summary::-webkit-details-marker{display:none}.prompt-detail summary::after{content:"＋";margin-left:auto;color:#829099}.prompt-detail[open] summary::after{content:"－"}
+  .prompt-body{padding:0 17px 17px;border-top:1px solid var(--line)}
+  .prompt-block{position:relative;margin-top:14px;padding:16px 48px 16px 16px;border-radius:10px;background:#192a35;color:#e7eff2;font-size:12px;line-height:1.8;white-space:pre-wrap}
+  .copy-btn{position:absolute;right:9px;top:9px;padding:5px 8px;border:1px solid #3b5360;border-radius:6px;background:#263d49;color:#cbd9df;cursor:pointer;font-size:10px}.copy-btn:hover{background:#345260;color:#fff}
+  .design-note{margin-top:10px;padding:11px 13px;border-radius:9px;background:#f3f7f7;color:#50616b;font-size:11.5px}
+  .iteration-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .iteration{padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff}.iteration.v1{border-top:4px solid #9aa5ac}.iteration.v2{border-top:4px solid var(--amber)}.iteration.v3{border-top:4px solid var(--teal)}
+  .iteration h3{margin:8px 0;color:var(--navy);font-size:15px}.iteration .mini-prompt{padding:11px;border-radius:8px;background:#f4f6f7;color:#4b5b66;font-size:11px;line-height:1.65}.iteration ul{padding-left:18px;color:#63717b;font-size:11.5px}.iteration li{margin-bottom:5px}
+  .anchor-card{display:grid;grid-template-columns:190px 1fr;overflow:hidden;border:1px solid var(--line);border-radius:15px;background:#fff}
+  .anchor-id{padding:24px;background:var(--navy);color:#fff}.anchor-id .avatar{display:grid;place-items:center;width:74px;height:74px;border-radius:50%;background:#e7d4c3;color:var(--navy);font-size:24px;font-weight:850;border:4px solid rgba(255,255,255,.25)}.anchor-id h3{margin:16px 0 3px}.anchor-id p{margin:0;color:#b8c8d2;font-size:11px}
+  .anchor-body{padding:22px}.anchor-row{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.anchor-row:last-child{border-bottom:0}.anchor-row b{color:var(--navy);font-size:11.5px}.anchor-row span{color:#596873;font-size:11.5px}
+  .fix-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fix{padding:14px;border:1px solid var(--line);border-radius:11px;background:#fff}.fix b{display:block;color:var(--red);font-size:12px}.fix span{display:block;margin-top:4px;color:#61707a;font-size:11px}
+  .footer{padding:22px 52px 34px;margin-left:var(--side);color:#909aa1;text-align:center;font-size:10.5px}
+
+  @media(max-width:1100px){.anatomy{grid-template-columns:repeat(2,1fr)}.module:nth-child(2)::after,.module:nth-child(6)::after{display:none}.module:nth-child(4)::after{display:block}.iteration-grid{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){
+    :root{--side:0px}.sidebar{display:none}.mobile-bar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:11px 15px;background:#fff;border-bottom:1px solid var(--line)}.mobile-brand{display:flex;align-items:center;gap:9px;color:var(--navy);font-weight:800}.mobile-brand .brand-mark{width:32px;height:32px;border-radius:9px;font-size:11px}.mobile-menu{width:38px;height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);cursor:pointer}.mobile-drawer{display:none;position:fixed;inset:55px 10px auto;z-index:50;padding:10px;border:1px solid var(--line);border-radius:13px;background:#fff;box-shadow:0 18px 45px rgba(21,54,77,.18)}.mobile-drawer.open{display:grid;gap:5px}.mobile-drawer button{padding:11px;border:0;border-radius:8px;background:#f2f5f6;color:#45545f;text-align:left}.mobile-drawer button.active{background:var(--teal-soft);color:#075e59;font-weight:700}
+    .page{margin-left:0}.page-head{padding:36px 20px 26px}.content{padding:28px 20px 54px}.footer{margin-left:0;padding:18px 20px}.grid-2,.grid-3,.anatomy,.check-grid{grid-template-columns:1fr}.module::after{display:none!important}.world-compare{grid-template-columns:1fr}.world-arrow{height:38px;transform:rotate(90deg)}.diagnosis{grid-template-columns:1fr}.diag-steps{display:grid;grid-template-columns:repeat(5,1fr);overflow:auto}.diag-step{padding:10px 8px;border-bottom:0;border-right:1px solid var(--line);font-size:10px;white-space:nowrap}.project-strip{grid-template-columns:1fr 1fr}.project-stat{border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.anchor-card{grid-template-columns:1fr}.anchor-row{grid-template-columns:1fr}.fix-list{grid-template-columns:1fr}h1{font-size:30px}.prompt-full{padding:45px 18px 18px}.iteration-grid{grid-template-columns:1fr}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  body.embed-mode { --bg:#F2F4F0; --paper:#FBFCF9; --ink:#202722; --muted:#687069; --line:#D9DDD7; --navy:#253B34; --teal:#315C4E; --teal-soft:#E7EEEA; --amber:#A65E18; --amber-soft:#F4ECE0; background:#F2F4F0; color:#202722 }
+  body.embed-mode .sidebar, body.embed-mode .mobile-bar, body.embed-mode .mobile-drawer { display:none!important }
+  body.embed-mode .page, body.embed-mode .footer { margin-left:0!important; background:#F2F4F0 }
+  body.embed-mode .page-head { padding:50px 64px 38px; background:#FBFCF9; border-color:#D9DDD7 }
+  body.embed-mode .page-head-inner, body.embed-mode .content { max-width:1080px }
+  body.embed-mode .content { padding:42px 64px 68px }
+  body.embed-mode h1, body.embed-mode .section-title h2 { color:#202722; font-family:STZhongsong,"Songti SC",SimSun,serif; letter-spacing:-.5px }
+  body.embed-mode h1 { font-size:42px }
+  body.embed-mode .eyebrow, body.embed-mode .section-index { color:#A3412E }
+  body.embed-mode .eyebrow::before { background:#A3412E }
+  body.embed-mode .card, body.embed-mode .module, body.embed-mode .prompt-detail, body.embed-mode .iteration, body.embed-mode .anchor-card, body.embed-mode .table-wrap, body.embed-mode .project-strip { border-color:#D9DDD7; border-radius:5px; box-shadow:none; background:#FBFCF9 }
+  body.embed-mode .callout { background:#E7EEEA; border-color:#315C4E }
+  body.embed-mode .footer { color:#8C938C }
+  @media(max-width:760px){body.embed-mode .page-head{padding:36px 22px 27px}body.embed-mode .content{padding:28px 22px 54px}body.embed-mode h1{font-size:30px}}
+  @media print{.sidebar,.mobile-bar,.mobile-drawer,.side-actions,.copy-btn{display:none!important}.page{display:block!important;margin:0;min-height:0;break-after:page}.page[data-page="overview"]{display:none!important}.page-head{padding:24px 30px}.content{padding:24px 30px}.footer{margin:0}.prompt-detail>.prompt-body{display:block!important}details{break-inside:avoid}.card,.module,.iteration{box-shadow:none}}
+</style>
+</head>
+<body>
+<aside class="sidebar" aria-label="按日期分类的作业导航">
+  <div class="brand"><div class="brand-mark">PE</div><div><strong>Prompt Lab</strong><small>课后作业归档</small></div></div>
+  <div class="date-label">按日期分类</div>
+  <section class="date-group">
+    <div class="date-head"><strong>2026年7月17日</strong><span>DAY 04</span></div>
+    <ul class="nav-list">
+      <li><button class="nav-link" data-target="overview"><span class="nav-num">总</span><span class="nav-copy"><strong>当日作业总览</strong><small>任务与交付物</small></span></button></li>
+      <li><button class="nav-link" data-target="task1"><span class="nav-num">01</span><span class="nav-copy"><strong>理论可视化实验</strong><small>提示词结构拆解图</small></span></button></li>
+      <li><button class="nav-link" data-target="task2"><span class="nav-num">02</span><span class="nav-copy"><strong>深度思考写作</strong><small>AI 看见的世界</small></span></button></li>
+      <li><button class="nav-link" data-target="task3"><span class="nav-num">03</span><span class="nav-copy"><strong>实战创作实践</strong><small>短剧五镜头完整转化</small></span></button></li>
+    </ul>
+  </section>
+  <p class="side-note">导航按提交日期归档。后续新增作业时，可继续添加新的日期分组。</p>
+  <div class="side-actions"><button type="button" data-target="task1">从任务一开始</button><button type="button" data-print>打印 / 导出 PDF</button></div>
+</aside>
+
+<header class="mobile-bar"><div class="mobile-brand"><span class="brand-mark">PE</span><span>第四天课后作业</span></div><button class="mobile-menu" aria-label="打开导航" aria-expanded="false">☰</button></header>
+<nav class="mobile-drawer" aria-label="移动端导航"><button data-target="overview">总览</button><button data-target="task1">01 · 理论可视化实验</button><button data-target="task2">02 · 深度思考写作</button><button data-target="task3">03 · 实战创作实践</button></nav>
+
+<main>
+  <article class="page" data-page="overview" id="overview">
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">2026.07.17 · 第四天</div><h1>提示词优化三任务<br>完整作业</h1><p class="lead">本页不是原参考稿的样式优化，而是依据课程截图重新完成的作业正文：结构拆解、深度思考、短剧实战三项内容均已完整作答。</p></div></header>
+    <div class="content">
+      <section class="section"><div class="section-title"><span class="section-index">00</span><div><h2>当日交付清单</h2><p>三项任务形成“理解结构—建立判断—完成创作”的闭环</p></div></div>
+        <div class="grid-3">
+          <div class="card pad"><span class="tag">任务一</span><h3>文生图提示词结构拆解</h3><p class="muted">8 个控制模块、完整示例、模块失效诊断与可直接套用的速查模板。</p></div>
+          <div class="card pad"><span class="tag amber">任务二</span><h3>提示词如何改变世界</h3><p class="muted">围绕模型理解、细节与情绪、失败诊断三组核心问题展开完整论述。</p></div>
+          <div class="card pad"><span class="tag blue">任务三</span><h3>《最后一班车》短剧实战</h3><p class="muted">45 秒、5 镜头、逐镜头提示词、3 轮迭代与人物一致性锚定方案。</p></div>
+        </div>
+      </section>
+      <div class="callout"><strong>统一创作母题：</strong>三项作业共同使用“雨夜公交站”场景。任务一拆解它的提示词结构，任务二比较不同写法形成的世界，任务三把它扩展为完整短剧，从而让理论与实践能够互相验证。</div>
+    </div>
+  </article>
+
+  <article class="page" data-page="task1" id="task1">
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第四天 · 任务一</div><h1>文生图提示词<br>结构拆解图</h1><p class="lead">选择“雨夜公交站的人物抉择”作为高质量示例，把一条完整提示词拆成 8 个可控制模块，并说明每个模块负责优化什么。</p></div></header>
+    <div class="content">
+      <section class="section"><div class="section-title"><span class="section-index">01</span><div><h2>完整示例提示词</h2><p>先看最终成品，再拆解它为什么有效</p></div></div>
+        <div class="prompt-full"><span class="k">【叙事目标】</span><span class="v">表现“善意让人错过一班车，却没有错过自己”的决定性瞬间。</span><br><span class="k">【主体锚点】</span><span class="v">26岁东亚女性苏念，黑色齐下颌短发，右眼下浅痣，米色风衣、酒红围巾、银色方表、深棕帆布邮差包；湿漉漉的小型黄色混种犬。</span><br><span class="k">【场景环境】</span><span class="v">深夜23:40的城市公交站，冷雨斜落，积水反射霓虹，末班车正靠站。</span><br><span class="k">【动作情绪】</span><span class="v">苏念半蹲着用围巾包住小狗，抬头看向已经打开的车门，迟疑一秒后眼神变得坚定。</span><br><span class="k">【镜头构图】</span><span class="v">中远景，35mm镜头，人物位于画面左三分之一，车门暖光在右侧形成视觉拉力，低机位轻微仰拍，前景雨滴虚化。</span><br><span class="k">【光线色彩】</span><span class="v">环境为青蓝冷调，车门为琥珀暖光，冷暖对比集中在人物脸部与酒红围巾。</span><br><span class="k">【风格质感】</span><span class="v">写实电影感，35mm胶片颗粒，自然肤质，克制表演，潮湿空气具有层次，非商业广告。</span><br><span class="k">【输出约束】</span><span class="v">16:9，4K，角色外貌与服装严格固定，空间关系清晰。</span><br><span class="n">负面约束：卡通感、过度磨皮、夸张哭泣、额外手指、围巾变色、人物复制、文字水印、背景行人抢镜。</span></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">02</span><div><h2>结构拆解全景图</h2><p>从意图到约束，控制信息按由主到次的顺序传递</p></div></div>
+        <div class="anatomy">
+          <div class="module"><span class="tag">01 输入</span><b>叙事目标</b><p>定义画面“为什么存在”，决定模型应该突出什么，而不只是罗列物体。</p><div class="example">优化：主题与信息优先级<br>缺失：画面正确但空洞</div></div>
+          <div class="module"><span class="tag amber">02 身份</span><b>主体锚点</b><p>固定人物、物体的可识别特征，是跨镜头一致性的最小身份集合。</p><div class="example">优化：角色识别与连续性<br>缺失：脸、发型、服装漂移</div></div>
+          <div class="module"><span class="tag blue">03 世界</span><b>场景环境</b><p>建立时间、地点、天气与空间关系，为画面提供可信的世界坐标。</p><div class="example">优化：时空与环境逻辑<br>缺失：场景泛化或错位</div></div>
+          <div class="module"><span class="tag red">04 表演</span><b>动作情绪</b><p>用可见动作承载不可见情绪，让人物不是“摆拍”，而是在事件中行动。</p><div class="example">优化：叙事瞬间与情绪证据<br>缺失：表情僵硬、情绪口号化</div></div>
+          <div class="module"><span class="tag">05 视点</span><b>镜头构图</b><p>规定景别、焦段、机位、主体位置与视觉动线，控制观众如何看。</p><div class="example">优化：信息层级与空间关系<br>缺失：主体不突出、画面杂乱</div></div>
+          <div class="module"><span class="tag amber">06 氛围</span><b>光线色彩</b><p>用光源方向、冷暖关系和综合色调塑造情绪，而不是堆叠“高级感”。</p><div class="example">优化：情绪基调与注意力<br>缺失：氛围平、重点不明</div></div>
+          <div class="module"><span class="tag blue">07 语言</span><b>风格质感</b><p>统一媒介、材质和审美边界，避免写实、插画、广告等视觉语言互相冲突。</p><div class="example">优化：视觉一致性<br>缺失：风格混杂、质感随机</div></div>
+          <div class="module"><span class="tag red">08 边界</span><b>输出与负面约束</b><p>指定比例、清晰度、连续性和禁区，收窄模型可能产生的错误空间。</p><div class="example">优化：可用性与稳定性<br>缺失：畸形、漂移、比例错误</div></div>
+        </div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">03</span><div><h2>模块传递关系</h2><p>不是关键词堆砌，而是一条从意义到画面的控制链</p></div></div>
+        <div class="formula"><span>我要表达什么</span><i>→</i><span>谁在画面里</span><i>→</i><span>发生在哪里</span><i>→</i><span>正在做什么</span><i>→</i><span>观众从哪里看</span><i>→</i><span>以什么光色感受</span><i>→</i><span>用什么视觉语言</span><i>→</i><span>哪些错误必须排除</span></div>
+        <div class="callout amber" style="margin-top:14px"><strong>关键控制节点：</strong>叙事目标决定其余模块的信息优先级；主体锚点和场景环境建立“世界”；动作情绪与镜头构图把世界变成“事件”；光色与风格决定观感；输出约束负责最后的稳定性。</div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">04</span><div><h2>实用速查模板</h2><p>替换方括号内容即可用于新的文生图任务</p></div></div>
+        <div class="prompt-full"><span class="k">【叙事目标】</span>[这一帧要让观众理解/感受什么]<br><span class="k">【主体锚点】</span>[年龄+身份+3—5个固定识别特征+服装/道具]<br><span class="k">【场景环境】</span>[地点+时间+天气+关键空间关系]<br><span class="k">【动作情绪】</span>[可观察的动作+目光方向+微表情，不只写情绪词]<br><span class="k">【镜头构图】</span>[景别+焦段+机位+主体位置+前中后景]<br><span class="k">【光线色彩】</span>[主光源+方向+冷暖/明暗关系+综合色调]<br><span class="k">【风格质感】</span>[媒介+审美参照+材质/颗粒+表演尺度]<br><span class="k">【输出约束】</span>[比例+清晰度+一致性要求]<br><span class="n">负面约束：[最可能发生的5—8种错误]</span></div>
+        <div class="check-grid" style="margin-top:14px"><div class="check"><b>先修主体</b><span>人错、物错、动作错时，不要先加风格词。</span></div><div class="check"><b>再修空间</b><span>位置、视线、前后关系错误时，明确构图和机位。</span></div><div class="check"><b>最后修质感</b><span>内容正确后，再调光色、材质和风格强度。</span></div></div>
+      </section>
+    </div>
+  </article>
+
+  <article class="page" data-page="task2" id="task2">
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第四天 · 任务二</div><h1>同一个场景，提示词不同<br>AI 看见的是不同的世界</h1><p class="lead">提示词不仅描述画面，更在设定模型理解画面的坐标系：什么是主体、什么是因果、什么值得被看见，以及哪些可能性应被排除。</p></div></header>
+    <div class="content">
+      <section class="section"><blockquote class="quote">我的核心判断：提示词优化的本质，不是把句子写得更华丽，而是降低“人的意图”到“模型的视觉概率分布”之间的翻译损耗。</blockquote></section>
+
+      <section class="section"><div class="section-title"><span class="section-index">01</span><div><h2>同一场景为什么会成为两个世界</h2><p>模型并没有先看到画面再执行命令，它从文字中推测哪一种画面最可能</p></div></div>
+        <div class="world-compare">
+          <div class="world bad"><span class="tag red">描述型提示词</span><h3>“雨夜，一个女孩在公交站抱着小狗，很感人。”</h3><p>它提供了对象和情绪标签，却没有交代情绪由何而来、冲突在哪里、观众应从哪里看。</p><div class="result"><b>模型可能看到：</b>一个泛化的“温馨公益海报”——人物居中微笑、雨景装饰化、没有末班车带来的选择压力。</div></div>
+          <div class="world-arrow">→</div>
+          <div class="world good"><span class="tag">引导型提示词</span><h3>“末班车门已经打开，她仍半蹲着用围巾裹住小狗……”</h3><p>动作、视线、车门暖光和空间位置共同构成因果，模型被引导去表达“上车还是留下”的决定。</p><div class="result"><b>模型更可能看到：</b>一个有戏剧张力的决定性瞬间——车门是诱因，狗是牵挂，人物目光完成选择。</div></div>
+        </div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">02</span><div><h2>差异来自“描述画面”，还是“引导理解”</h2><p>两者都有，但更深层的是后者</p></div></div>
+        <div class="prose">
+          <p>描述画面解决的是“画面里有什么”：人物、地点、天气、物体和动作。它是必要条件，却不是充分条件。如果提示词只完成物体清单，模型可以生成语义正确的图，却不一定知道谁最重要、事件为何发生、观众应该产生什么感受。</p>
+          <p>引导模型理解，则是在指定“这些元素之间是什么关系”。例如，“女孩、狗、公交车”只是三个对象；“末班车门已经打开，而女孩仍蹲下救狗”才建立了时间压力、选择冲突与人物价值。模型由此不仅知道要画什么，也知道应该如何分配注意力。</p>
+          <p>因此，高质量提示词更接近一份视觉导演说明：它同时包含<strong>世界设定、角色身份、事件因果、观看视点和审美边界</strong>。同一个场景写法不同，改变的不只是细节数量，而是模型搜索画面的起点与路径。</p>
+        </div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">03</span><div><h2>细节增加与情绪引导，是什么关系</h2><p>细节不是越多越好；有效细节应当成为情绪的可见证据</p></div></div>
+        <div class="grid-2">
+          <div class="card pad"><span class="tag red">无效堆砌</span><h3>细节很多，但没有共同方向</h3><p class="muted">广告牌颜色、路人数目、建筑材质、雨伞品牌都被写入，却与人物选择无关。这类细节会争夺注意力，增加模型的不确定性。</p></div>
+          <div class="card pad"><span class="tag">情绪证据</span><h3>每个细节都服务同一情绪</h3><p class="muted">打开的车门表示机会即将消失；湿透的小狗表示不能再等；被取下的酒红围巾既是角色锚点，也是善意的具体动作。</p></div>
+        </div>
+        <div class="callout" style="margin-top:14px"><strong>判断标准：</strong>删除某个细节后，如果主题、动作因果或观看重点没有变化，它很可能只是装饰；如果删除后情绪失去证据，它就是有效细节。正确顺序是“先定情绪方向，再选择能证明这种情绪的细节”。</div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">04</span><div><h2>模型始终生成不出想要的结果，从哪里入手</h2><p>不要继续无差别加词，先诊断偏差属于哪一层</p></div></div>
+        <div class="diagnosis"><div class="diag-steps"><div class="diag-step active">1 目标层</div><div class="diag-step">2 主体层</div><div class="diag-step">3 空间层</div><div class="diag-step">4 表达层</div><div class="diag-step">5 技术层</div></div><div class="diag-body"><h3>从“结果差距”反推最小修正点</h3><ul><li><b>目标层：</b>先用一句话写清观众最终应理解什么；主题不清，后续细节都会漂移。</li><li><b>主体层：</b>角色、动作、道具错误时，删减风格词，强化身份锚点和动作主谓关系。</li><li><b>空间层：</b>位置、视线、遮挡错误时，明确前中后景、左右关系、镜头高度和焦段。</li><li><b>表达层：</b>情绪不对时，不要只写“悲伤/感人”，改写为身体动作、目光和光色证据。</li><li><b>技术层：</b>畸形、漂移、清晰度问题最后处理，通过负面约束、参考图、固定 seed 或平台参数收敛。</li></ul></div></div>
+        <div class="prose"><h3>我的实际迭代原则</h3><ol><li>一次只改变一个关键变量，才能知道是哪项修改生效。</li><li>先保证“内容正确”，再追求“画面漂亮”；主体错误时增加电影感没有意义。</li><li>把抽象形容词换成可被看见的证据，例如把“她很犹豫”改成“她看一眼车门，又低头收紧怀中的狗”。</li><li>如果纯文字已到极限，就使用角色参考图、姿态参考或局部重绘，不让提示词承担所有控制任务。</li></ol></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">05</span><div><h2>结论</h2><p>好提示词是一套可执行的视觉决策</p></div></div><div class="prose"><p>同一场景之所以因提示词而呈现完全不同的世界，是因为提示词重写了模型的注意力结构。它告诉模型哪些内容是主语，哪些关系构成事件，哪些细节承担情绪，以及观众应以什么视点进入画面。</p><p>所以，优化提示词不是不断增加词汇，而是不断减少歧义：把抽象意图变成可见证据，把并列元素变成因果关系，把审美愿望变成镜头、光线和材质的具体选择。最终追求的不是“更长的提示词”，而是<strong>更低的信息损耗和更高的结果可控性</strong>。</p></div></section>
+    </div>
+  </article>
+
+  <article class="page" data-page="task3" id="task3">
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第四天 · 任务三</div><h1>《最后一班车》<br>短剧提示词完整转化</h1><p class="lead">以一个 45 秒都市情感短剧为单位，完成剧本、五镜头拆分、逐镜头文生图/视频提示词、三轮迭代与人物一致性方案。</p></div></header>
+    <div class="content">
+      <section class="section"><div class="project-strip"><div class="project-stat"><b>36 秒</b><span>内嵌成片</span></div><div class="project-stat"><b>5 镜头</b><span>完整叙事单元</span></div><div class="project-stat"><b>1 人 + 1 狗</b><span>核心角色</span></div><div class="project-stat"><b>16:9</b><span>电影横屏</span></div></div></section>
+
+      <section class="section" id="embedded-video"><div class="section-title"><span class="section-index">VIDEO</span><div><h2>概念样片 · 《最后一班车》</h2><p>当前为动态图形分镜，仅用于节奏预览；真人电影版待替换</p></div></div><div class="video-deliverable"><video controls preload="metadata" playsinline poster="../assets/2026-07-17-最后一班车-封面.jpg"><source src="../assets/2026-07-17-最后一班车.mp4" type="video/mp4">当前浏览器不支持内嵌视频，请直接打开 MP4 文件。</video><div class="video-meta"><div><b>概念样片 · 1280 × 720 · H.264 / AAC</b><span>用于检查五镜头结构、字幕节奏与冷暖转场，不作为最终电影成片</span></div><span class="video-badge">待替换</span></div></div></section>
+
+      <section class="section"><div class="section-title"><span class="section-index">01</span><div><h2>短剧设定与完整剧本</h2><p>主题：有些错过，是为了不再错过自己</p></div></div>
+        <div class="grid-2"><div class="card pad"><span class="tag">一句话梗概</span><p>准备离开这座城市的苏念，在雨夜末班车到站时发现一只受伤的小狗。她必须在“按计划离开”和“留下救它”之间作出选择。</p></div><div class="card pad"><span class="tag amber">人物弧光</span><p>开场时她机械地执行离城计划；结尾时她第一次主动偏离计划。救狗也是在救回自己对生活的感受力。</p></div></div>
+        <div class="table-wrap" style="margin-top:16px"><table><thead><tr><th>镜头</th><th>时长</th><th>画面与动作</th><th>声音 / 台词</th><th>叙事作用</th></tr></thead><tbody>
+          <tr><td>01 建立</td><td>0—7s</td><td>雨夜公交站。苏念独自站在站牌下，看手机上的“末班车还有2分钟”。</td><td>雨声、远处车流；手机提示音。</td><td>建立离开倒计时与孤独状态。</td></tr>
+          <tr><td>02 发现</td><td>7—14s</td><td>长椅下传来轻微呜咽。一只湿透的小黄狗缩在阴影里，前爪受伤。</td><td>小狗低鸣；苏念轻声：“你怎么在这儿？”</td><td>引入需要被帮助的对象。</td></tr>
+          <tr><td>03 靠近</td><td>14—24s</td><td>她蹲下，取下酒红围巾包住小狗。小狗慢慢把头靠在她手腕上。</td><td>音乐第一次进入；呼吸声贴近。</td><td>通过动作建立情感连接。</td></tr>
+          <tr><td>04 选择</td><td>24—36s</td><td>末班车靠站，车门打开。她看向车门，再低头抱紧小狗。司机等了两秒，她摇头。</td><td>开门提示音；司机：“上不上？” 苏念：“不了。”</td><td>全片决定性瞬间，完成价值选择。</td></tr>
+          <tr><td>05 余韵</td><td>36—45s</td><td>清晨宠物医院门口，雨停。苏念抱着包扎好的小狗，删除手机里的离城车票。</td><td>鸟鸣；画外音：“原来留下，也可以是出发。”</td><td>完成主题，给出新的开始。</td></tr>
+        </tbody></table></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">02</span><div><h2>五镜头视觉分镜</h2><p>每一帧都有明确的构图、光色与叙事任务</p></div></div>
+        <div class="storyboard"><div class="shot-card"><div class="shot-visual"><span class="shot-no">SHOT 01</span><span class="shot-scene">孤独站台<br>冷雨与倒计时</span></div><div class="shot-info"><b>24mm · 广角全景</b><p>人物小、环境大，强调“她正准备离开”。</p></div></div><div class="shot-card"><div class="shot-visual"><span class="shot-no">SHOT 02</span><span class="shot-scene">长椅阴影<br>发现受伤小狗</span></div><div class="shot-info"><b>50mm · 主观近景</b><p>从她的视线进入，建立关切。</p></div></div><div class="shot-card"><div class="shot-visual"><span class="shot-no">SHOT 03</span><span class="shot-scene">围巾包裹<br>第一次靠近</span></div><div class="shot-info"><b>85mm · 手部特写</b><p>用触摸动作代替直白煽情。</p></div></div><div class="shot-card"><div class="shot-visual"><span class="shot-no">SHOT 04</span><span class="shot-scene">车门打开<br>选择留下</span></div><div class="shot-info"><b>35mm · 中远景</b><p>冷暖对峙，画面内部产生拉力。</p></div></div><div class="shot-card"><div class="shot-visual"><span class="shot-no">SHOT 05</span><span class="shot-scene">雨后清晨<br>新的出发</span></div><div class="shot-info"><b>50mm · 中景</b><p>色温回暖，完成情绪释放。</p></div></div></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">03</span><div><h2>逐镜头提示词与设计意图</h2><p>角色锚点在每个镜头重复，变化部分只描述当前动作、构图与光线</p></div></div>
+        <details class="prompt-detail" open><summary><span class="tag">镜头 01</span>建立场景：孤独与倒计时</summary><div class="prompt-body"><div class="prompt-block">26岁东亚女性苏念，黑色齐下颌短发，右眼下浅痣，米色风衣、酒红围巾、银色方表、深棕帆布邮差包，独自站在深夜23:38的城市公交站，低头看手机上的末班车倒计时，冷雨斜落，空旷道路和霓虹倒影延伸到远处；24mm广角全景，人物位于右侧三分之一且占画面较小比例，站牌形成垂直框架，青蓝冷调，顶棚白色荧光灯，写实电影感，35mm胶片颗粒，克制表演，16:9。负面：人物居中摆拍、微笑、暖色广告感、路人拥挤、服装变化、文字水印。<button class="copy-btn">复制</button></div><div class="design-note"><b>视频运动补充：</b>镜头缓慢向前推近 5%，雨线持续向右下方移动，人物仅抬腕看手机，不转身。设计意图：用“环境大、人物小”表现离城前的疏离。</div></div></details>
+        <details class="prompt-detail"><summary><span class="tag amber">镜头 02</span>发现小狗：视线建立关系</summary><div class="prompt-body"><div class="prompt-block">保持苏念外貌、米色风衣、酒红围巾、银色方表与深棕邮差包完全一致；她听见声音后微微侧头，视线落向公交长椅下方，一只湿透的小型黄色混种犬蜷缩在阴影里，左前爪轻微受伤，琥珀色眼睛谨慎抬起；50mm主观近景，前景是苏念模糊的肩膀与酒红围巾，焦点落在小狗眼睛，背景雨幕柔化，冷灰环境光，一点便利店暖光勾边，写实电影感，16:9。负面：大型犬、纯种犬、血腥伤口、卡通动物、狗的毛色改变、多只狗。<button class="copy-btn">复制</button></div><div class="design-note"><b>视频运动补充：</b>焦点从前景肩部缓慢转移到小狗眼睛，小狗轻轻抬头一次。设计意图：让观众通过苏念的视线“发现”，不直接切成说明性动物照片。</div></div></details>
+        <details class="prompt-detail"><summary><span class="tag blue">镜头 03</span>建立连接：动作承载情绪</summary><div class="prompt-body"><div class="prompt-block">保持苏念的脸型、黑色齐下颌短发、右眼下浅痣、米色风衣、银色方表、深棕邮差包一致；她半蹲在公交长椅旁，取下唯一的酒红围巾，小心包住同一只小型黄色混种犬，狗的左前爪受伤，鼻尖贴近她戴银色方表的手腕；85mm近距离特写，手、围巾和狗头构成三角构图，浅景深，雨滴在背景形成圆形散景，皮肤与湿毛发真实，冷环境中酒红色成为唯一高饱和色，克制温柔，35mm胶片质感，16:9。负面：额外手指、手部畸形、围巾仍在脖子上、围巾变色、夸张哭泣、狗的品种变化。<button class="copy-btn">复制</button></div><div class="design-note"><b>视频运动补充：</b>手部缓慢完成一次包裹动作，小狗先退缩半厘米再靠近手腕。设计意图：把“心软”转成可见的触摸变化。</div></div></details>
+        <details class="prompt-detail"><summary><span class="tag red">镜头 04</span>决定性瞬间：上车还是留下</summary><div class="prompt-body"><div class="prompt-block">保持苏念外貌与服装完全一致，但酒红围巾此刻包在同一只小型黄色混种犬身上；深夜23:40，末班公交车已靠站，右侧车门打开并投出琥珀暖光，苏念在左侧半蹲抱住小狗，先抬头看车门，随后低头收紧手臂，眼神从迟疑变为坚定；35mm中远景，低机位轻微仰拍，人物位于左三分之一、车门位于右三分之一，中间留出雨幕形成选择距离，青蓝环境与暖黄车门冷暖对比，前景雨滴虚化，真实电影帧，35mm胶片颗粒，16:9。负面：人物站上公交车、围巾回到脖子、夸张大哭、司机抢镜、额外人物、动作重复、脸部漂移、广告海报感。<button class="copy-btn">复制</button></div><div class="design-note"><b>视频运动补充：</b>车门打开后保持两秒；苏念只完成“看车门—低头—抱紧”三个连续动作；镜头不切换，公交车最终缓慢驶离。设计意图：让选择发生在同一空间里，观众能同时看见诱因与决定。</div></div></details>
+        <details class="prompt-detail"><summary><span class="tag">镜头 05</span>雨后余韵：留下也是出发</summary><div class="prompt-body"><div class="prompt-block">保持苏念黑色齐下颌短发、右眼下浅痣、米色风衣、银色方表、深棕邮差包一致，酒红围巾仍包着同一只小型黄色混种犬，狗的左前爪已缠白色绷带；清晨宠物医院门口，雨刚停，苏念抱着小狗，用另一只手删除手机里的离城电子车票，随后轻轻呼气；50mm中景，人物居中偏左，玻璃门反射淡金天空，地面积水从冷蓝过渡到柔暖金色，自然晨光，真实肤质，克制的释然微笑，电影结尾帧，16:9。负面：正午强光、灿烂大笑、服装改变、狗毛色改变、绷带位置错误、手机屏幕乱码特写。<button class="copy-btn">复制</button></div><div class="design-note"><b>视频运动补充：</b>镜头从积水倒影轻微上摇到人物；她完成一次删除动作，小狗抬头看她。设计意图：光色由冷转暖，但表演保持克制，避免廉价大团圆。</div></div></details>
+        <div class="callout amber"><strong>生成说明：</strong>为保证 HTML 可离线独立提交，本版不绑定某一平台的每日生成额度。每个镜头已给出预期画面、运动和验收条件；实际生成时建议先产出角色参考图，再按 01→05 顺序生成，并把上一镜头作为下一镜头的角色/风格参考。</div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">04</span><div><h2>关键镜头三轮迭代对比</h2><p>选择镜头 04，逐轮解决“泛化—关系不清—角色漂移”问题</p></div></div>
+        <div class="iteration-grid">
+          <div class="iteration v1"><span class="tag red">V1 初稿</span><h3>只有事件概述</h3><div class="mini-prompt">雨夜，一个女孩抱着小狗，末班车来了，她决定不上车，电影感。</div><ul><li><b>预期问题：</b>女孩外貌随机；公交车、人物、狗并列摆放。</li><li>“决定不上车”不可直接被画面看见，容易生成静态公益海报。</li><li><b>结论：</b>主题有了，但缺少可视化证据。</li></ul></div>
+          <div class="iteration v2"><span class="tag amber">V2 结构化</span><h3>加入构图与动作链</h3><div class="mini-prompt">末班车门在右侧打开，女孩在左侧半蹲抱狗，看向车门后又低头抱紧；35mm中远景，冷雨与暖光对比。</div><ul><li><b>改善：</b>选择关系清楚，画面有左右拉力，情绪更可见。</li><li><b>仍有问题：</b>女孩与前镜头不一致；围巾可能仍在脖子上；动作时序可能混乱。</li><li><b>结论：</b>构图成立，但连续性未锁定。</li></ul></div>
+          <div class="iteration v3"><span class="tag">V3 精稿</span><h3>加入角色锚点与连续性</h3><div class="mini-prompt">重复苏念固定外貌/服装；明确酒红围巾此刻在同一只黄狗身上；限定“看车门—低头—抱紧”的唯一动作顺序，并加入脸部、围巾、毛色负面约束。</div><ul><li><b>预期效果：</b>人物身份稳定；道具状态承接镜头 03；模型知道哪个瞬间最重要。</li><li>适合配合固定 seed、角色参考图和首尾帧控制。</li><li><b>结论：</b>从“描述故事”升级为“控制镜头”。</li></ul></div>
+        </div>
+        <div class="table-wrap" style="margin-top:14px"><table><thead><tr><th>迭代</th><th>新增控制</th><th>解决的问题</th><th>使用技巧</th></tr></thead><tbody><tr><td>V1 → V2</td><td>动作链、左右空间、焦段、冷暖光</td><td>事件不可见、画面无重点</td><td>结构化描述、构图控制、情绪证据</td></tr><tr><td>V2 → V3</td><td>角色锚点、道具状态、动作顺序、负面约束</td><td>角色漂移、连续性断裂、时序混乱</td><td>参考锚定、状态继承、否定提示</td></tr></tbody></table></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">05</span><div><h2>人物一致性锚定方案</h2><p>固定“身份特征”，让动作、表情与环境按镜头灵活变化</p></div></div>
+        <div class="anchor-card"><div class="anchor-id"><div class="avatar">苏</div><h3>苏念 / SU NIAN</h3><p>Character ID · SN-01<br>26岁 · 城市插画师</p></div><div class="anchor-body"><div class="anchor-row"><b>外貌核心</b><span>东亚女性；椭圆脸；黑色齐下颌短发，发尾轻微内扣；深棕眼睛；右眼下方一颗浅痣；自然直眉；偏冷白肤色。</span></div><div class="anchor-row"><b>服装道具</b><span>米色及膝风衣；酒红色羊毛围巾；银色方形腕表；深棕帆布邮差包。围巾位置随剧情改变，但颜色与材质不变。</span></div><div class="anchor-row"><b>风格锚定</b><span>写实电影感、35mm胶片颗粒、自然肤质、克制表演、青蓝环境与局部琥珀暖光、非商业广告。</span></div><div class="anchor-row"><b>跨镜头策略</b><span>先生成正面/45度/侧面三视图参考；每镜重复身份短语；固定角色参考图与 seed；上一镜输出作为下一镜参考；记录围巾、狗伤口等状态变化。</span></div></div></div>
+        <h3 style="margin:24px 0 12px;color:var(--navy)">必须固定与可灵活调整</h3>
+        <div class="table-wrap"><table><thead><tr><th>类型</th><th>要素</th><th>规则</th></tr></thead><tbody><tr><td><span class="tag red">必须固定</span></td><td>脸型、短发长度、右眼下浅痣、年龄感、肤色</td><td>构成角色身份，所有镜头逐字重复，不能用同义词随意替换。</td></tr><tr><td><span class="tag red">必须固定</span></td><td>风衣颜色版型、银色方表、邮差包、围巾颜色材质</td><td>造型连续性固定；围巾“位置”可按剧情从脖子转移到狗身上。</td></tr><tr><td><span class="tag">可调整</span></td><td>表情、姿态、视线、景别、焦段、机位</td><td>服务当前镜头，但变化必须符合前后动作逻辑。</td></tr><tr><td><span class="tag">可调整</span></td><td>雨量、背景虚化、色温、环境亮度</td><td>可随情绪弧线变化；整体仍保持同一电影质感。</td></tr></tbody></table></div>
+        <h3 style="margin:24px 0 12px;color:var(--navy)">常见失控与修正</h3>
+        <div class="fix-list"><div class="fix"><b>脸型 / 年龄漂移</b><span>提高角色参考权重；删掉与外貌无关的风格人名；使用同一正面参考与固定 seed。</span></div><div class="fix"><b>发型长度变化</b><span>每镜重复“黑色齐下颌短发，发尾轻微内扣”，负面加入长发、刘海突变、染发。</span></div><div class="fix"><b>服装或围巾跳变</b><span>建立道具状态表：镜头1—2在脖子；镜头3取下；镜头4—5包在狗身上。</span></div><div class="fix"><b>狗的品种 / 毛色变化</b><span>固定“小型黄色混种犬、半立耳、白色胸斑、左前爪受伤”，并使用同一动物参考图。</span></div></div>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">06</span><div><h2>角色在三个场景中的锚点应用</h2><p>固定身份短语，替换场景与动作变量</p></div></div>
+        <div class="grid-3"><div class="card pad"><span class="tag blue">场景 A · 公交站</span><p><b>固定：</b>苏念外貌、风衣、方表、邮差包。</p><p class="muted"><b>变化：</b>酒红围巾在脖子；她站立看手机；青蓝雨夜广角。</p></div><div class="card pad"><span class="tag amber">场景 B · 选择时刻</span><p><b>固定：</b>相同脸、发型、服装与电影质感。</p><p class="muted"><b>变化：</b>围巾在狗身上；她半蹲抱狗；车门暖光加入。</p></div><div class="card pad"><span class="tag">场景 C · 宠物医院</span><p><b>固定：</b>相同身份特征、风衣、方表与包。</p><p class="muted"><b>变化：</b>清晨暖光；狗爪出现绷带；人物轻微释然。</p></div></div>
+        <div class="callout" style="margin-top:14px"><strong>核心心得：</strong>人物一致性不是把每个镜头写得一模一样，而是区分“身份不变量”和“剧情变量”。脸、发型、标志性配饰属于身份；动作、表情、机位和光线属于剧情。把两者混写，模型就容易把合理变化误当成重新设计角色。</div>
+      </section>
+    </div>
+  </article>
+</main>
+
+<footer class="footer">第四天课后作业 · 提示词优化三任务完整版 · 2026年7月17日</footer>
+<script>
+  if(new URLSearchParams(location.search).get('embed')==='1') document.body.classList.add('embed-mode');
+  const pages=[...document.querySelectorAll('.page')];
+  const navButtons=[...document.querySelectorAll('[data-target]')];
+  const drawer=document.querySelector('.mobile-drawer');
+  const menu=document.querySelector('.mobile-menu');
+  function showPage(id,updateHash=true){
+    if(!pages.some(p=>p.dataset.page===id)) id='overview';
+    pages.forEach(p=>p.classList.toggle('active',p.dataset.page===id));
+    navButtons.forEach(b=>b.classList.toggle('active',b.dataset.target===id));
+    document.title=(id==='overview'?'第四天课后作业':id==='task1'?'任务一｜提示词结构拆解':id==='task2'?'任务二｜深度思考写作':'任务三｜短剧实战')+' · Prompt Lab';
+    if(updateHash) history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant'});
+    drawer.classList.remove('open'); menu.setAttribute('aria-expanded','false');
+  }
+  navButtons.forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.target)));
+  menu.addEventListener('click',()=>{const open=drawer.classList.toggle('open');menu.setAttribute('aria-expanded',String(open))});
+  document.querySelector('[data-print]').addEventListener('click',()=>window.print());
+  document.querySelectorAll('.copy-btn').forEach(btn=>btn.addEventListener('click',async e=>{
+    e.stopPropagation();
+    const text=btn.parentElement.childNodes[0].textContent.trim();
+    try{await navigator.clipboard.writeText(text);btn.textContent='已复制';setTimeout(()=>btn.textContent='复制',1200)}catch{btn.textContent='请手动复制'}
+  }));
+  window.addEventListener('hashchange',()=>showPage(location.hash.slice(1),false));
+  showPage(location.hash.slice(1)||'overview',false);
+</script>
+</body>
+</html>
