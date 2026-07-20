@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>第五天课程作业 · 神经网络学习闭环</title>
+<title>第三天课程作业 · 神经网络学习闭环</title>
 <style>
   :root{
     --pine:#203c33;--pine-2:#315c4e;--ink:#1f2924;--muted:#68736c;--paper:#fbfcf8;
@@ -17,7 +17,7 @@
   .date-label{padding:28px 22px 10px;color:#8fa59b;font-size:9px;font-weight:800;letter-spacing:1.5px}.date-head{margin:0 14px;padding:13px 12px;border-left:3px solid var(--amber);background:rgba(255,255,255,.055)}.date-head strong{display:block;font-family:Georgia,"Songti SC",serif;font-size:17px}.date-head span{display:block;margin-top:3px;color:#adc0b7;font:700 9px/1.4 Consolas,monospace;letter-spacing:1px}
   .nav-list{display:grid;gap:2px;margin:14px 0;padding:0 12px}.nav-list button{display:grid;grid-template-columns:32px 1fr;gap:10px;align-items:center;width:100%;padding:10px;border:0;background:transparent;color:#b9c8c1;text-align:left;cursor:pointer}.nav-list button:hover,.nav-list button.active{background:rgba(255,255,255,.08);color:#fff}.nav-num{display:grid;place-items:center;width:28px;height:28px;border:1px solid rgba(255,255,255,.2);color:#9eb1a8;font:700 9px Consolas,monospace}.nav-list button.active .nav-num{border-color:var(--amber);background:var(--amber);color:var(--pine)}.nav-copy strong{display:block;font-size:11px}.nav-copy small{display:block;color:#8fa59b;font-size:8.5px}.nav-list button.active .nav-copy small{color:#c5d1cc}
   .side-note{margin:auto 20px 0;padding:15px 0 18px;border-top:1px solid rgba(255,255,255,.12);color:#92a79d;font-size:9.5px}.side-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0 14px 18px}.side-actions button{padding:9px 6px;border:1px solid rgba(255,255,255,.18);background:transparent;color:#c5d2cc;font-size:9px;cursor:pointer}.side-actions button:hover{border-color:var(--amber);color:#fff}
-  .mobile-bar,.mobile-drawer{display:none}main{margin-left:248px;min-height:100vh}.page{display:none;min-height:100vh;background:var(--paper)}.page.active{display:block}.page-head{position:relative;overflow:hidden;padding:62px clamp(30px,6vw,86px) 52px;background:var(--pine);color:#fff}.page-head::before{content:"";position:absolute;width:420px;height:420px;right:-120px;top:-190px;border:1px solid rgba(255,255,255,.1);border-radius:50%;box-shadow:0 0 0 62px rgba(255,255,255,.025),0 0 0 124px rgba(255,255,255,.02)}.page-head::after{content:"NN / 05";position:absolute;right:4vw;bottom:13px;color:rgba(255,255,255,.06);font:800 clamp(54px,9vw,110px)/1 Georgia,serif;letter-spacing:-5px}.page-head-inner{position:relative;z-index:1;max-width:940px}.eyebrow{display:flex;align-items:center;gap:10px;color:#e6c99f;font:700 10px/1.3 Consolas,monospace;letter-spacing:1.5px}.eyebrow::before{content:"";width:34px;height:2px;background:var(--amber)}h1{max-width:820px;margin:18px 0 16px;font-family:STZhongsong,"Songti SC",SimSun,serif;font-size:clamp(34px,5vw,60px);line-height:1.12;letter-spacing:-1px}.lead{max-width:770px;margin:0;color:#c5d2cc;font-size:15px;line-height:1.9}.content{max-width:1180px;margin:auto;padding:48px clamp(22px,5vw,70px) 78px}.section{margin-bottom:48px}.section-title{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;margin-bottom:20px}.section-index{padding-top:4px;color:var(--red);font:800 10px Consolas,monospace;letter-spacing:1px}.section-title h2{margin:0;color:var(--pine);font-family:STZhongsong,"Songti SC",SimSun,serif;font-size:25px;line-height:1.35}.section-title p{margin:4px 0 0;color:var(--muted);font-size:11px}
+  .mobile-bar,.mobile-drawer{display:none}main{margin-left:248px;min-height:100vh}.page{display:none;min-height:100vh;background:var(--paper)}.page.active{display:block}.page-head{position:relative;overflow:hidden;padding:62px clamp(30px,6vw,86px) 52px;background:var(--pine);color:#fff}.page-head::before{content:"";position:absolute;width:420px;height:420px;right:-120px;top:-190px;border:1px solid rgba(255,255,255,.1);border-radius:50%;box-shadow:0 0 0 62px rgba(255,255,255,.025),0 0 0 124px rgba(255,255,255,.02)}.page-head::after{content:"NN / 03";position:absolute;right:4vw;bottom:13px;color:rgba(255,255,255,.06);font:800 clamp(54px,9vw,110px)/1 Georgia,serif;letter-spacing:-5px}.page-head-inner{position:relative;z-index:1;max-width:940px}.eyebrow{display:flex;align-items:center;gap:10px;color:#e6c99f;font:700 10px/1.3 Consolas,monospace;letter-spacing:1.5px}.eyebrow::before{content:"";width:34px;height:2px;background:var(--amber)}h1{max-width:820px;margin:18px 0 16px;font-family:STZhongsong,"Songti SC",SimSun,serif;font-size:clamp(34px,5vw,60px);line-height:1.12;letter-spacing:-1px}.lead{max-width:770px;margin:0;color:#c5d2cc;font-size:15px;line-height:1.9}.content{max-width:1180px;margin:auto;padding:48px clamp(22px,5vw,70px) 78px}.section{margin-bottom:48px}.section-title{display:grid;grid-template-columns:54px 1fr;gap:14px;align-items:start;margin-bottom:20px}.section-index{padding-top:4px;color:var(--red);font:800 10px Consolas,monospace;letter-spacing:1px}.section-title h2{margin:0;color:var(--pine);font-family:STZhongsong,"Songti SC",SimSun,serif;font-size:25px;line-height:1.35}.section-title p{margin:4px 0 0;color:var(--muted);font-size:11px}
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:1px solid var(--line);background:#fff;box-shadow:0 8px 24px rgba(35,56,46,.04)}.pad{padding:22px}.card h3{margin:11px 0 8px;color:var(--pine);font-size:16px}.muted{color:var(--muted)}.tag{display:inline-flex;align-items:center;min-height:23px;padding:0 8px;background:var(--green-soft);color:var(--pine-2);font-size:9px;font-weight:800;letter-spacing:.4px}.tag.amber{background:var(--amber-soft);color:#8a5d24}.tag.blue{background:var(--blue-soft);color:var(--blue)}.tag.red{background:#f2e5e1;color:var(--red)}
   .callout{padding:18px 20px;border-left:4px solid var(--pine-2);background:var(--green-soft);color:#3d5047}.callout.amber{border-left-color:var(--amber);background:var(--amber-soft)}.callout.red{border-left-color:var(--red);background:#f3e7e3}.callout strong{color:var(--pine)}
   .loop-strip{display:grid;grid-template-columns:repeat(7,minmax(116px,1fr));gap:8px;overflow:auto;padding:4px 2px 10px}.loop-step{position:relative;min-width:116px;padding:16px 12px;border-top:3px solid var(--pine-2);background:#fff;box-shadow:0 8px 22px rgba(34,58,48,.06)}.loop-step:not(:last-child)::after{content:"→";position:absolute;right:-9px;top:34px;z-index:2;color:var(--red);font-weight:900}.loop-step:nth-child(4),.loop-step:nth-child(5){border-color:var(--red)}.loop-step:nth-child(6),.loop-step:nth-child(7){border-color:var(--amber)}.loop-step b{display:block;color:var(--pine);font-size:12px}.loop-step span{display:block;margin-top:5px;color:var(--muted);font-size:10px}
@@ -37,10 +37,10 @@
 </style>
 </head>
 <body>
-<aside class="sidebar" aria-label="第五天课程作业导航">
+<aside class="sidebar" aria-label="第三天课程作业导航">
   <div class="brand"><div class="brand-mark">NN</div><div><strong>Neural Lab</strong><small>学习机制档案</small></div></div>
   <div class="date-label">本次归档</div>
-  <div class="date-head"><strong>2026年7月20日</strong><span>ARCHIVE D03 · COURSE DAY 05</span></div>
+  <div class="date-head"><strong>2026年7月20日</strong><span>ARCHIVE D03 · COURSE DAY 03</span></div>
   <nav class="nav-list">
     <button data-target="overview"><span class="nav-num">总</span><span class="nav-copy"><strong>当日作业总览</strong><small>三项成果与共同主线</small></span></button>
     <button data-target="task1"><span class="nav-num">01</span><span class="nav-copy"><strong>神经网络工作全景图</strong><small>训练闭环与推理路径</small></span></button>
@@ -51,12 +51,12 @@
   <div class="side-actions"><button type="button" data-target="task1">从任务一开始</button><button type="button" data-print>打印 / 导出</button></div>
 </aside>
 
-<header class="mobile-bar"><strong>第五天 · 神经网络学习</strong><button class="mobile-menu" aria-label="打开导航" aria-expanded="false">☰</button></header>
+<header class="mobile-bar"><strong>第三天 · 神经网络学习</strong><button class="mobile-menu" aria-label="打开导航" aria-expanded="false">☰</button></header>
 <nav class="mobile-drawer"><button data-target="overview">总览</button><button data-target="task1">01 · 工作全景图</button><button data-target="task2">02 · 深度思考</button><button data-target="task3">03 · 工具探索</button></nav>
 
 <main>
   <article class="page" data-page="overview" id="overview">
-    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">2026.07.20 · 第五天课程作业</div><h1>神经网络如何<br>从错误中学会一件事</h1><p class="lead">三项成果围绕同一条主线展开：先把神经网络从训练到推理的机制画清楚，再判断这种“学习”与人的学习有什么不同，最后用一个完整类比把反向传播真正讲明白。</p></div></header>
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">2026.07.20 · 第三天课程作业</div><h1>神经网络如何<br>从错误中学会一件事</h1><p class="lead">三项成果围绕同一条主线展开：先把神经网络从训练到推理的机制画清楚，再判断这种“学习”与人的学习有什么不同，最后用一个完整类比把反向传播真正讲明白。</p></div></header>
     <div class="content">
       <section class="section"><div class="section-title"><span class="section-index">00</span><div><h2>当日交付清单</h2><p>理论可视化、深度思考、工具复现三项任务均形成可独立阅读的成果</p></div></div>
         <div class="grid-3">
@@ -73,7 +73,7 @@
   </article>
 
   <article class="page" data-page="task1" id="task1">
-    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第五天 · 任务一 · 理论可视化</div><h1>神经网络<br>“工作全景图”</h1><p class="lead">以图像分类为例，把输入层、隐藏层、输出层、损失计算、反向传播与参数更新放入同一张可交互流程图，完整呈现“学习”和“使用”的差别。</p></div></header>
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第三天 · 任务一 · 理论可视化</div><h1>神经网络<br>“工作全景图”</h1><p class="lead">以图像分类为例，把输入层、隐藏层、输出层、损失计算、反向传播与参数更新放入同一张可交互流程图，完整呈现“学习”和“使用”的差别。</p></div></header>
     <div class="content">
       <section class="section"><div class="section-title"><span class="section-index">01</span><div><h2>从学习到推理的完整闭环</h2><p>训练阶段包含纠错回路；推理阶段只使用已经学好的参数</p></div></div>
         <div class="network-lab" data-network-lab data-mode="train">
@@ -111,7 +111,7 @@
   </article>
 
   <article class="page" data-page="task2" id="task2">
-    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第五天 · 任务二 · 深度思考写作</div><h1>AI 到底是怎么<br>“学会”一件事的？</h1><p class="lead">我的答案不是“它记住了公式”，也不是“它像人一样懂了”。AI 的学习是一种由数据、目标函数和反馈共同塑造的参数变化；它与人类学习共享“从反馈中修正”的外形，却缺少人的身体经验、价值目的与责任关系。</p></div></header>
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第三天 · 任务二 · 深度思考写作</div><h1>AI 到底是怎么<br>“学会”一件事的？</h1><p class="lead">我的答案不是“它记住了公式”，也不是“它像人一样懂了”。AI 的学习是一种由数据、目标函数和反馈共同塑造的参数变化；它与人类学习共享“从反馈中修正”的外形，却缺少人的身体经验、价值目的与责任关系。</p></div></header>
     <div class="content">
       <section class="section"><blockquote class="quote">AI 的“学会”，是让内部参数形成一种稳定倾向：面对某类输入时，更容易生成符合训练目标的输出。能力由此出现，但主观理解不能仅从表现相似中被直接证明。<small>——我的核心判断</small></blockquote></section>
 
@@ -144,7 +144,7 @@
   </article>
 
   <article class="page" data-page="task3" id="task3">
-    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第五天 · 任务三 · 工具深度探索</div><h1>把反向传播<br>变成一次合唱团排练</h1><p class="lead">我选择“类比创作”形式，用合唱团排练复现反向传播与梯度下降。重点不是编一个好听的故事，而是逐项对应概念、检查映射，并明确类比在哪些地方失效。</p></div></header>
+    <header class="page-head"><div class="page-head-inner"><div class="eyebrow">第三天 · 任务三 · 工具深度探索</div><h1>把反向传播<br>变成一次合唱团排练</h1><p class="lead">我选择“类比创作”形式，用合唱团排练复现反向传播与梯度下降。重点不是编一个好听的故事，而是逐项对应概念、检查映射，并明确类比在哪些地方失效。</p></div></header>
     <div class="content">
       <section class="section"><div class="section-title"><span class="section-index">01</span><div><h2>从理解到输出的创作过程</h2><p>保留选择、拆解、映射、校验和反思的完整闭环</p></div></div>
         <div class="process"><div class="process-step"><span>STEP 01</span><b>选择难点</b><small>反向传播为何能知道每个参数该怎么改</small></div><div class="process-step"><span>STEP 02</span><b>拆成动作</b><small>演唱、比较、追责、调整、再演唱</small></div><div class="process-step"><span>STEP 03</span><b>寻找场景</b><small>选择有目标、有误差、有多人协作的排练</small></div><div class="process-step"><span>STEP 04</span><b>逐项映射</b><small>每个技术概念必须找到唯一对应</small></div><div class="process-step"><span>STEP 05</span><b>反向检查</b><small>从类比能否还原公式与训练流程</small></div><div class="process-step"><span>STEP 06</span><b>标出边界</b><small>主动说明故事与真实机制不同之处</small></div></div>
@@ -185,14 +185,14 @@
   </article>
 </main>
 
-<footer class="footer">第五天课程作业 · 神经网络学习闭环 · 归档于 2026年7月20日</footer>
+<footer class="footer">第三天课程作业 · 神经网络学习闭环 · 归档于 2026年7月20日</footer>
 <script>
   if(new URLSearchParams(location.search).get('embed')==='1') document.body.classList.add('embed-mode');
   const pages=[...document.querySelectorAll('.page')];
   const navButtons=[...document.querySelectorAll('[data-target]')];
   const drawer=document.querySelector('.mobile-drawer');
   const menu=document.querySelector('.mobile-menu');
-  const titles={overview:'第五天课程作业',task1:'任务一｜神经网络工作全景图',task2:'任务二｜AI 如何学会一件事',task3:'任务三｜合唱团排练类比'};
+  const titles={overview:'第三天课程作业',task1:'任务一｜神经网络工作全景图',task2:'任务二｜AI 如何学会一件事',task3:'任务三｜合唱团排练类比'};
 
   function showPage(id,updateHash=true){
     if(!pages.some(page=>page.dataset.page===id)) id='overview';
