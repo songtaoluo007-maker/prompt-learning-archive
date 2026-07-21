@@ -26,11 +26,13 @@
   .table-wrap{overflow:auto;border:1px solid var(--line);background:#fff;max-height:600px}table{width:100%;border-collapse:collapse;min-width:800px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;font-size:11px}th{background:#edf1ec;color:var(--pine);font-size:10px;position:sticky;top:0;z-index:1}td{color:#4d5a53}td:first-child{color:var(--pine);font-weight:700}.pass{color:var(--pine-2);font-weight:700}.fail{color:var(--red);font-weight:700}
   .process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.process-step{padding:16px;background:#fff;border:1px solid var(--line);position:relative}.process-step:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--red);font-weight:900}.process-step span{color:var(--red);font:800 9px Consolas,monospace}.process-step b{display:block;margin-top:6px;color:var(--pine);font-size:12px}.process-step small{display:block;margin-top:4px;color:var(--muted);font-size:10px}
   .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat-card{padding:18px;background:#fff;border:1px solid var(--line);text-align:center}.stat-card .num{font:800 28px Georgia,serif;color:var(--pine)}.stat-card .label{margin-top:6px;color:var(--muted);font-size:10px}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.compare-card{border:1px solid var(--line);background:#fff;padding:16px;box-shadow:0 8px 24px rgba(35,56,46,.04)}.compare-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.compare-raw{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:#f6efed;border-left:3px solid var(--red)}.compare-raw code{font:11.5px/1.7 Consolas,"Courier New",monospace;color:#7a4a42;word-break:break-all}.compare-arrow{text-align:center;color:var(--amber);font-size:14px;font-weight:900;margin:3px 0}.compare-clean{display:flex;gap:10px;align-items:flex-start;padding:9px 12px;background:var(--green-soft);border-left:3px solid var(--pine-2);font:12px/1.7 Consolas,monospace;color:#2c4a3e;word-break:break-all}.compare-label{flex-shrink:0;align-self:flex-start;margin-top:2px;padding:1px 7px;border-radius:2px;font-size:9px;font-weight:800;letter-spacing:.5px;color:#fff}.compare-raw .compare-label{background:var(--red)}.compare-clean .compare-label{background:var(--pine-2)}.compare-clean mark{background:#bfe3cd;color:#1c4532;padding:0 3px;border-radius:3px;font-weight:700}
+  .view-toggle{display:flex;border:1px solid var(--line)}.view-toggle button{padding:7px 14px;border:0;background:#fff;color:var(--muted);font-size:11px;cursor:pointer}.view-toggle button.active{background:var(--pine-2);color:#fff}.cmp-item{border-bottom:1px solid var(--line);padding:12px 20px}.cmp-raw{display:flex;gap:10px;align-items:baseline;padding:8px 12px;background:#f6efed;border-left:3px solid var(--red);margin-bottom:6px}.cmp-raw code{font:11.5px/1.6 Consolas,monospace;color:#7a4a42;word-break:break-all}.cmp-clean{display:flex;gap:10px;align-items:baseline;padding:8px 12px;background:var(--green-soft);border-left:3px solid var(--pine-2);font:12px/1.6 Consolas,monospace;color:#2c4a3e;word-break:break-all}.cmp-label{flex-shrink:0;padding:1px 7px;border-radius:2px;font-size:9px;font-weight:800;color:#fff}.cmp-raw .cmp-label{background:var(--red)}.cmp-clean .cmp-label{background:var(--pine-2)}
   .footer{margin-left:248px;padding:16px 30px;background:#dfe5df;color:#78827b;text-align:center;font-size:9px}
   .modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(31,41,36,.6);backdrop-filter:blur(3px)}.modal.open{display:flex;align-items:center;justify-content:center;padding:20px}.modal-box{width:min(1100px,96vw);max-height:92vh;display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--line);box-shadow:0 30px 80px rgba(0,0,0,.25)}.modal-head{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line);background:#fff}.modal-head h3{margin:0;color:var(--pine);font-size:16px}.modal-head .count{color:var(--muted);font-size:11px}.modal-search{margin-left:auto;padding:8px 12px;border:1px solid var(--line);font-size:12px;width:200px}.modal-search:focus{outline:none;border-color:var(--pine-2)}.modal-close{width:32px;height:32px;border:1px solid var(--line);background:#fff;color:var(--muted);cursor:pointer;font-size:14px}.modal-close:hover{border-color:var(--red);color:var(--red)}.modal-body{flex:1;overflow:auto;padding:0}.modal-body table{min-width:900px}.modal-foot{display:flex;align-items:center;gap:10px;padding:14px 20px;border-top:1px solid var(--line);background:#fff}.btn{padding:9px 16px;border:1px solid var(--pine-2);background:var(--pine-2);color:#fff;font-size:11px;cursor:pointer}.btn:hover{background:var(--pine)}.btn.ghost{background:#fff;color:var(--pine-2)}.btn.ghost:hover{background:var(--green-soft)}
   .embed-mode .sidebar,.embed-mode .mobile-bar,.embed-mode .mobile-drawer,.embed-mode .footer{display:none!important}.embed-mode main{margin-left:0}.embed-mode .page-head{padding-top:48px}
-  @media(max-width:1000px){.grid-3,.grid-2,.process-steps,.stats-grid{grid-template-columns:1fr 1fr}}
-  @media(max-width:760px){.sidebar{display:none}.mobile-bar{position:sticky;top:0;z-index:30;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--pine);color:#fff}.mobile-menu{width:36px;height:36px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff}.mobile-drawer{position:fixed;left:0;right:0;top:60px;z-index:29;display:none;padding:10px;background:var(--pine);box-shadow:0 12px 30px rgba(0,0,0,.2)}.mobile-drawer.open{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mobile-drawer button{padding:11px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#d4ded9;text-align:left;font-size:10px}main,.footer{margin-left:0}.page-head{padding:44px 24px 38px}.content{padding:34px 18px 56px}.grid-3,.grid-2,.process-steps,.stats-grid{grid-template-columns:1fr}}
+  @media(max-width:1000px){.grid-3,.grid-2,.process-steps,.stats-grid,.compare-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:760px){.sidebar{display:none}.mobile-bar{position:sticky;top:0;z-index:30;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:var(--pine);color:#fff}.mobile-menu{width:36px;height:36px;border:1px solid rgba(255,255,255,.2);background:transparent;color:#fff}.mobile-drawer{position:fixed;left:0;right:0;top:60px;z-index:29;display:none;padding:10px;background:var(--pine);box-shadow:0 12px 30px rgba(0,0,0,.2)}.mobile-drawer.open{display:grid;grid-template-columns:1fr 1fr;gap:6px}.mobile-drawer button{padding:11px;border:1px solid rgba(255,255,255,.15);background:transparent;color:#d4ded9;text-align:left;font-size:10px}main,.footer{margin-left:0}.page-head{padding:44px 24px 38px}.content{padding:34px 18px 56px}.grid-3,.grid-2,.process-steps,.stats-grid,.compare-grid{grid-template-columns:1fr}}
   @media print{.sidebar,.mobile-bar,.mobile-drawer,.side-actions{display:none!important}main,.footer{margin-left:0}.page{display:block!important;min-height:0;break-after:page}.page-head{padding:28px}.content{padding:26px}}
 </style>
 </head>
@@ -126,50 +128,49 @@
         </tbody></table></div>
       </section>
 
-      <section class="section"><div class="section-title"><span class="section-index">04</span><div><h2>数据清洗结果</h2><p>共处理 300+ 条记录，以下为规范表格（部分展示）</p></div></div>
+      <section class="section"><div class="section-title"><span class="section-index">04</span><div><h2>清洗前后对比</h2><p>精选 8 条典型记录，直观展示从混乱原始数据到规范表格的转换过程（绿色高亮为被修正的字段）</p></div></div>
+        <div class="compare-grid">
+          <div class="compare-card"><div class="compare-tags"><span class="tag">分隔符统一</span><span class="tag blue">课程归一</span><span class="tag amber">日期标准化</span><span class="tag">状态映射</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>蒋鑫 | 采购管理部 | Excel | 2024年2月11 | 合格 | 得分：94分</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>蒋鑫 | 采购管理部 | <mark>Excel数据处理</mark> | <mark>2024-02-11</mark> | <mark>是</mark> | <mark>94</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag">空格分隔</span><span class="tag blue">英文成绩 scored</span><span class="tag amber">日期标准化</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>李凯  法务部 数据分析基础培训 2024/12 考核通过 scored 71</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>李凯 | 法务部 | <mark>数据分析基础</mark> | <mark>2024-12</mark> | <mark>是</mark> | <mark>71</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag">中文逗号</span><span class="tag red">部门归一</span><span class="tag amber">日期缺失</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>郭晨，财务部门，财务基础知识，——，考核通过，得分88</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>郭晨 | <mark>财务管理部</mark> | <mark>财务知识普及</mark> | <mark>—</mark> | <mark>是</mark> | <mark>88</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag red">部门归一</span><span class="tag blue">课程缩写</span><span class="tag amber">无年份日期</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>叶燕 | 采购部 | ML进阶 | 7月7号 | 考核通过 | 成绩:69</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>叶燕 | <mark>采购管理部</mark> | <mark>机器学习进阶</mark> | <mark>2024-07-07</mark> | <mark>是</mark> | <mark>69</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag red">英文部门 HR</span><span class="tag amber">点号日期</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>刘明，HR部门，商务英语写作，2024.6，通过，100分</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>刘明 | <mark>人力资源部</mark> | <mark>英语商务写作</mark> | <mark>2024-06</mark> | <mark>是</mark> | <mark>100</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag red">部门归一</span><span class="tag amber">季度转月份</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>韩俊，技术部，机器学习进阶课，2024年第4季度，考核通过，70分</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>韩俊 | <mark>技术研发部</mark> | <mark>机器学习进阶</mark> | <mark>2024-10</mark> | <mark>是</mark> | <mark>70</mark></span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag red">部门归一</span><span class="tag blue">缺席处理</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>吕云 | 合规部 | 数据分析 | 2024年8月15日 | 缺席 | —</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>吕云 | <mark>法务部</mark> | <mark>数据分析基础</mark> | <mark>2024-08-15</mark> | <mark>否</mark> | —</span></div></div>
+          <div class="compare-card"><div class="compare-tags"><span class="tag red">部门归一</span><span class="tag blue">括号课程名</span><span class="tag">英文状态 PASS</span></div>
+            <div class="compare-raw"><span class="compare-label">原始</span><code>董浩，运营中心，机器学习（进阶），8月17号，PASS，得分：66分</code></div><div class="compare-arrow">↓</div>
+            <div class="compare-clean"><span class="compare-label">清洗</span><span>董浩 | <mark>运营管理部</mark> | <mark>机器学习进阶</mark> | <mark>2024-08-17</mark> | <mark>是</mark> | <mark>66</mark></span></div></div>
+        </div>
+        <p class="muted" style="margin-top:12px;font-size:11px">* 以上 8 条覆盖了分隔符混用、部门/课程别名、日期多格式、状态多写法、成绩多前缀等全部清洗场景。全部 500 条的逐条对比可在下方弹窗中切换“逐条对比”视图查看。</p>
+      </section>
+
+      <section class="section"><div class="section-title"><span class="section-index">05</span><div><h2>数据清洗结果</h2><p>共处理 500 条记录，以下为规范表格（部分展示）</p></div></div>
         <div class="stats-grid" style="margin-bottom:16px">
           <div class="stat-card"><div class="num">500</div><div class="label">总记录数</div></div>
           <div class="stat-card"><div class="num">396</div><div class="label">通过人数</div></div>
           <div class="stat-card"><div class="num">99</div><div class="label">未通过人数</div></div>
           <div class="stat-card"><div class="num">5</div><div class="label">缺席/待补录</div></div>
         </div>
-        <div class="table-wrap"><table><thead><tr><th>姓名</th><th>部门</th><th>培训课程</th><th>培训日期</th><th>是否通过</th><th>成绩（分）</th></tr></thead><tbody id="sampleTable">
-          <tr><td>蒋鑫</td><td>采购管理部</td><td>Excel数据处理</td><td>2024-02-11</td><td class="pass">是</td><td>94</td></tr>
-          <tr><td>李凯</td><td>法务部</td><td>数据分析基础</td><td>2024-12</td><td class="pass">是</td><td>71</td></tr>
-          <tr><td>于燕</td><td>技术研发部</td><td>数据分析基础</td><td>待补录</td><td class="fail">否</td><td>48</td></tr>
-          <tr><td>郭晨</td><td>财务部</td><td>财务基础知识</td><td>—</td><td class="pass">是</td><td>88</td></tr>
-          <tr><td>何超</td><td>供应链部</td><td>Excel数据处理</td><td>2024-07-22</td><td class="pass">是</td><td>—</td></tr>
-          <tr><td>叶龙</td><td>运营管理部</td><td>数据分析基础</td><td>待补录</td><td class="pass">是</td><td>72</td></tr>
-          <tr><td>卢帆</td><td>采购管理部</td><td>Excel数据处理</td><td>2024-09</td><td class="fail">否</td><td>47</td></tr>
-          <tr><td>蒋伟</td><td>运营管理部</td><td>PPT商务汇报</td><td>2024-07-26</td><td class="pass">是</td><td>—</td></tr>
-          <tr><td>叶燕</td><td>采购管理部</td><td>机器学习进阶</td><td>2024-07-07</td><td class="pass">是</td><td>69</td></tr>
-          <tr><td>苏帆</td><td>法务部</td><td>信息安全</td><td>2024-12</td><td class="pass">是</td><td>—</td></tr>
-          <tr><td>宋震</td><td>技术研发部</td><td>Excel数据处理</td><td>2024-01</td><td class="pass">是</td><td>83</td></tr>
-          <tr><td>林军</td><td>市场营销部</td><td>PPT商务汇报</td><td>—</td><td class="fail">否</td><td>59</td></tr>
-          <tr><td>冯颖</td><td>运营管理部</td><td>Excel数据处理</td><td>—</td><td class="pass">是</td><td>—</td></tr>
-          <tr><td>萧宇</td><td>技术研发部</td><td>数据分析基础</td><td>2024-12-25</td><td class="pass">是</td><td>98</td></tr>
-          <tr><td>袁玲</td><td>技术研发部</td><td>信息安全</td><td>—</td><td class="pass">是</td><td>69</td></tr>
-          <tr><td>胡帆</td><td>采购管理部</td><td>英语商务写作</td><td>2024-01</td><td class="pass">是</td><td>—</td></tr>
-          <tr><td>何军</td><td>供应链部</td><td>数据分析基础</td><td>—</td><td class="pass">是</td><td>61</td></tr>
-          <tr><td>曾旭</td><td>运营管理部</td><td>PPT商务汇报</td><td>2024-12-26</td><td class="pass">是</td><td>72</td></tr>
-          <tr><td>萧涛</td><td>市场营销部</td><td>英语商务写作</td><td>2024-11</td><td class="pass">是</td><td>97</td></tr>
-          <tr><td>吕云</td><td>合规部</td><td>数据分析基础</td><td>2024-08-15</td><td class="fail">否</td><td>—</td></tr>
-          <tr><td>朱飞</td><td>运营管理部</td><td>英语商务写作</td><td>待补录</td><td class="fail">否</td><td>30</td></tr>
-          <tr><td>董浩</td><td>运营管理部</td><td>机器学习进阶</td><td>2024-08-17</td><td class="pass">是</td><td>66</td></tr>
-          <tr><td>何震</td><td>运营管理部</td><td>沟通技巧</td><td>2024-10</td><td class="pass">是</td><td>61</td></tr>
-          <tr><td>韩俊</td><td>技术研发部</td><td>机器学习进阶</td><td>2024-10</td><td class="pass">是</td><td>70</td></tr>
-          <tr><td>刘明</td><td>人力资源部</td><td>英语商务写作</td><td>2024-06</td><td class="pass">是</td><td>100</td></tr>
-          <tr><td>余莉</td><td>采购管理部</td><td>数据分析基础</td><td>待补录</td><td class="fail">否</td><td>32</td></tr>
-          <tr><td>余强</td><td>财务部</td><td>机器学习进阶</td><td>2024-10</td><td class="pass">是</td><td>88</td></tr>
-          <tr><td>彭宇</td><td>市场营销部</td><td>Python基础</td><td>2024-02</td><td class="pass">是</td><td>98</td></tr>
-          <tr><td>孙洋</td><td>销售市场部</td><td>Python基础</td><td>2024-08-22</td><td class="pass">是</td><td>77</td></tr>
-          <tr><td>李震</td><td>人力资源部</td><td>Python基础</td><td>—</td><td class="pass">是</td><td>—</td></tr>
-        </tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>姓名</th><th>部门</th><th>培训课程</th><th>培训日期</th><th>是否通过</th><th>成绩（分）</th></tr></thead><tbody id="sampleTable"></tbody></table></div>
         <p class="muted" style="margin-top:10px;font-size:11px">* 以上为部分展示，完整数据共 500 条记录已全部清洗完成。</p>
         <div style="display:flex;gap:10px;margin-top:14px"><button class="btn" onclick="openFullData()">查看完整数据（500条）</button><a class="btn ghost" href="../assets/员工培训记录-清洗后.csv" download>下载 CSV 文件</a></div>
       </section>
 
-      <section class="section"><div class="section-title"><span class="section-index">05</span><div><h2>提示词技巧应用说明</h2><p>本次数据清洗中使用的提示词技巧与具体应用</p></div></div>
+      <section class="section"><div class="section-title"><span class="section-index">06</span><div><h2>提示词技巧应用说明</h2><p>本次数据清洗中使用的提示词技巧与具体应用</p></div></div>
         <div class="grid-2">
           <div class="card pad"><span class="tag">角色设定</span><h3>设定数据分析师角色</h3><p class="muted">"你是一位资深数据分析师，擅长处理混乱的原始数据..."——激活数据处理的专业知识域。</p></div>
           <div class="card pad"><span class="tag amber">格式约束</span><h3>明确输出表格结构</h3><p class="muted">指定六列字段名、数据类型、缺失值处理方式，确保输出可直接使用。</p></div>
@@ -184,14 +185,18 @@
 
 <div class="modal" id="dataModal">
   <div class="modal-box">
-    <div class="modal-head"><h3>完整清洗数据</h3><span class="count" id="dataCount">500 条记录</span><input type="text" class="modal-search" id="dataSearch" placeholder="搜索姓名/部门/课程..."><button class="modal-close" onclick="closeFullData()">×</button></div>
-    <div class="modal-body"><table><thead><tr><th>姓名</th><th>部门</th><th>培训课程</th><th>培训日期</th><th>是否通过</th><th>成绩（分）</th></tr></thead><tbody id="fullTable"></tbody></table></div>
+    <div class="modal-head"><h3>完整清洗数据</h3><span class="count" id="dataCount">500 条记录</span><div class="view-toggle"><button type="button" id="btnTableView" class="active" onclick="setView('table')">表格视图</button><button type="button" id="btnCompareView" onclick="setView('compare')">逐条对比</button></div><input type="text" class="modal-search" id="dataSearch" placeholder="搜索姓名/部门/课程..."><button class="modal-close" onclick="closeFullData()">×</button></div>
+    <div class="modal-body">
+      <div id="modalTableView"><table><thead><tr><th>姓名</th><th>部门</th><th>培训课程</th><th>培训日期</th><th>是否通过</th><th>成绩（分）</th></tr></thead><tbody id="fullTable"></tbody></table></div>
+      <div id="modalCompareView" style="display:none"><div id="compareList"></div></div>
+    </div>
     <div class="modal-foot"><button class="btn" onclick="downloadCSV()">下载 CSV</button><button class="btn ghost" onclick="closeFullData()">关闭</button><span class="muted" style="margin-left:auto;font-size:10px">数据来源：员工培训记录汇总(未校对版).xlsx</span></div>
   </div>
 </div>
 
 <footer class="footer">第四天课程作业 · 提示词技巧整合与数据清洗实践 · 归档于 2026年7月21日</footer>
 <script src="../assets/full-data.js"></script>
+<script src="../assets/raw-data.js"></script>
 <script>
   if(new URLSearchParams(location.search).get('embed')==='1') document.body.classList.add('embed-mode');
   const pages=[...document.querySelectorAll('.page')];
@@ -219,26 +224,39 @@
   const requestedPage=new URLSearchParams(location.search).get('page')||location.hash.slice(1)||'overview';
   showPage(requestedPage,false);
 
-  // 完整数据弹窗功能
-  let filteredData=[];
-  function renderTable(data){
-    filteredData=data;
-    document.getElementById('dataCount').textContent=data.length+' 条记录';
-    document.getElementById('fullTable').innerHTML=data.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="${r[4]==='是'?'pass':r[4]==='否'?'fail':''}">${r[4]}</td><td>${r[5]}</td></tr>`).join('');
+  // ===== 数据展示功能 =====
+  const hasData=typeof FULL_DATA!=='undefined'&&typeof RAW_DATA!=='undefined';
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function rowHTML(r){return `<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="${r[4]==='是'?'pass':r[4]==='否'?'fail':''}">${esc(r[4])}</td><td>${esc(r[5])}</td></tr>`;}
+
+  // 示例表格：渲染前 30 条真实清洗数据，保证与完整数据一致
+  if(hasData){document.getElementById('sampleTable').innerHTML=FULL_DATA.slice(0,30).map(rowHTML).join('');}
+
+  // 完整数据弹窗（表格 / 逐条对比 双视图）
+  let filteredIdx=[];let viewMode='table';
+  function renderView(){
+    document.getElementById('dataCount').textContent=filteredIdx.length+' 条记录';
+    const tv=document.getElementById('modalTableView'),cv=document.getElementById('modalCompareView');
+    if(viewMode==='table'){tv.style.display='';cv.style.display='none';
+      document.getElementById('fullTable').innerHTML=filteredIdx.map(i=>rowHTML(FULL_DATA[i])).join('');
+    }else{tv.style.display='none';cv.style.display='';
+      document.getElementById('compareList').innerHTML=filteredIdx.map(i=>`<div class="cmp-item"><div class="cmp-raw"><span class="cmp-label">原始</span><code>${esc(RAW_DATA[i])}</code></div><div class="cmp-clean"><span class="cmp-label">清洗</span>${FULL_DATA[i].map(esc).join(' ｜ ')}</div></div>`).join('');
+    }
   }
-  function openFullData(){
-    if(typeof FULL_DATA!=='undefined'){renderTable(FULL_DATA);document.getElementById('dataModal').classList.add('open');document.getElementById('dataSearch').value='';}
+  function applyFilter(){
+    const q=document.getElementById('dataSearch').value.trim().toLowerCase();
+    if(!q){filteredIdx=FULL_DATA.map((_,i)=>i);}
+    else{filteredIdx=FULL_DATA.map((r,i)=>({r,i})).filter(o=>o.r.some(c=>String(c).toLowerCase().includes(q))||RAW_DATA[o.i].toLowerCase().includes(q)).map(o=>o.i);}
+    renderView();
   }
+  function setView(mode){viewMode=mode;document.getElementById('btnTableView').classList.toggle('active',mode==='table');document.getElementById('btnCompareView').classList.toggle('active',mode==='compare');renderView();}
+  function openFullData(){if(!hasData)return;viewMode='table';setView('table');document.getElementById('dataSearch').value='';applyFilter();document.getElementById('dataModal').classList.add('open');}
   function closeFullData(){document.getElementById('dataModal').classList.remove('open');}
-  document.getElementById('dataSearch').addEventListener('input',e=>{
-    const q=e.target.value.trim().toLowerCase();
-    if(!q){renderTable(FULL_DATA);return;}
-    renderTable(FULL_DATA.filter(r=>r.some(c=>c.toLowerCase().includes(q))));
-  });
+  document.getElementById('dataSearch').addEventListener('input',applyFilter);
   function downloadCSV(){
     const BOM='\uFEFF';
     const header='姓名,部门,培训课程,培训日期,是否通过,成绩（分）';
-    const rows=filteredData.map(r=>r.join(','));
+    const rows=filteredIdx.map(i=>FULL_DATA[i].join(','));
     const blob=new Blob([BOM+header+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='员工培训记录-清洗后.csv';a.click();
   }
