@@ -41,7 +41,7 @@
   <nav class="nav-shell" id="navShell" aria-label="学习档案导航">
     <section class="date-rail">
       <div class="brand"><div class="seal">PE</div><div><b>学习档案</b><span>PROMPT ENGINEERING</span></div></div>
-      <div class="month"><small>LEARNING ARCHIVE</small><strong>JUL</strong><span>2026 · 四日成果</span></div>
+      <div class="month"><small>LEARNING ARCHIVE</small><strong>JUL</strong><span>2026 · 五日成果</span></div>
       <div class="date-list" id="dateList"></div>
       <div class="rail-note"><b>原始成果安全保留</b>展示副本单独维护，任何界面修改都不会覆盖原始备份。</div>
     </section>
@@ -78,13 +78,18 @@
       {title:'任务二 · 深度思考',items:[['task2','AI 如何学会一件事','理解、泛化与幻觉']]},
       {title:'任务三 · 工具探索',items:[['task3','合唱团排练类比','复现反向传播与梯度下降']]}
     ]},
-    '2026-07-21':{day:'04',date:'07.21',full:'2026年7月21日',label:'第四天 · 提示词整合与数据实践',today:true,source:'archives/2026-07-21-今日作业成果.html',groups:[
+    '2026-07-21':{day:'04',date:'07.21',full:'2026年7月21日',label:'第四天 · 提示词整合与数据实践',source:'archives/2026-07-21-今日作业成果.html',groups:[
       {title:'当日总览',items:[['overview','今日作业总览','知识整合与工具实践']]},
       {title:'任务一 · 知识整合',items:[['task1','提示词技巧个人笔记','五大技巧与实战经验']]},
       {title:'任务二 · 工具实践',items:[['task2','员工培训数据清洗','原始数据规范化处理']]}
+    ]},
+    '2026-07-22':{day:'05',date:'07.22',full:'2026年7月22日',label:'第五天 · 计算机视觉与 AI 生图',today:true,source:'archives/2026-07-22-计算机视觉与AI生图作业.html',groups:[
+      {title:'当日总览',items:[['overview','今日作业总览','计算机视觉与两轮 AI 生图']]},
+      {title:'任务一 · 理论可视化',items:[['task1','生活中的计算机视觉','五个输入—识别—输出案例']]},
+      {title:'任务二 · 工具体验',items:[['task2','校园科技海报','V1、V2 生图与体验报告']]}
     ]}
   };
-  const $=s=>document.querySelector(s),frame=$('#frame'),loading=$('#loading'),navShell=$('#navShell'),mask=$('#mask');let completed=new Set(JSON.parse(localStorage.getItem('promptArchive.done')||'[]'));let state={date:'2026-07-21',page:'overview'},loadTimer=0;
+  const $=s=>document.querySelector(s),frame=$('#frame'),loading=$('#loading'),navShell=$('#navShell'),mask=$('#mask');let completed=new Set(JSON.parse(localStorage.getItem('promptArchive.done')||'[]'));let state={date:'2026-07-22',page:'overview'},loadTimer=0;
   const items=(date=state.date)=>DAYS[date].groups.flatMap(g=>g.items.map(item=>({group:g.title,item})));const k=(d,p)=>`${d}/${p}`;
   function readHash(){const [d,p]=location.hash.slice(1).split('/');if(DAYS[d]){state.date=d;const list=items(d);state.page=list.some(x=>x.item[0]===p)?p:list[0].item[0]}}
   function drawDates(){$('#dateList').innerHTML=Object.entries(DAYS).map(([id,d])=>`<button class="date-btn ${id===state.date?'active':''}" data-date="${id}"><span class="date-day">D${d.day}</span><span class="date-copy"><b>${d.date}${d.today?'<em class="today">TODAY</em>':''}</b><span>${d.label}</span></span></button>`).join('');document.querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>changeDate(b.dataset.date))}
