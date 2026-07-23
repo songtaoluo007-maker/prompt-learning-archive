@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>第六天 · AI 文本分类与语言理解</title>
+<style>
+  :root{--paper:#f5f1e7;--white:#fffdf7;--ink:#20352f;--muted:#68756e;--line:#d9d1c3;--pine:#143d33;--pine2:#2c6858;--brick:#ad4933;--amber:#d9a95c;--notice:#31705e;--report:#a95338;--question:#72764e;--shadow:0 18px 45px rgba(15,49,40,.1)}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#e8ece7;color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}button,a{font:inherit}a{color:inherit}img{display:block;max-width:100%}
+  .shell{min-height:100vh;display:grid;grid-template-columns:238px minmax(0,1fr)}
+  .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:28px 20px;background:var(--pine);color:#f1f5f2;overflow:auto}.archive-id{display:flex;align-items:center;gap:12px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.14)}.archive-id b{display:grid;place-items:center;width:48px;height:48px;background:var(--brick);font:800 15px Georgia,serif}.archive-id span{display:block;color:#a8c2b9;font-size:10px;letter-spacing:1.4px}.archive-id strong{display:block;margin-top:4px;font:700 15px/1.25 "Songti SC",SimSun,serif}.side-meta{margin:27px 4px 13px;color:#9eb7ae;font-size:10px;letter-spacing:1.3px}.side-date{margin:0 4px 24px;font:400 34px/1 Georgia,serif}.side-date small{display:block;margin-top:8px;color:#c7d8d2;font:500 11px/1.5 sans-serif}.side-nav{display:grid;gap:5px}.side-nav button{display:grid;grid-template-columns:30px 1fr;gap:9px;align-items:center;width:100%;padding:11px 12px;border:0;border-left:3px solid transparent;background:transparent;color:#b9ccc5;text-align:left;cursor:pointer}.side-nav button:hover{background:rgba(255,255,255,.06);color:#fff}.side-nav button.active{border-left-color:var(--amber);background:rgba(255,255,255,.09);color:#fff}.side-nav i{font:700 10px Consolas,monospace;font-style:normal;color:#83a89b}.side-nav b{font-size:12px}.side-foot{margin-top:auto;padding-top:24px;color:#89a69c;font-size:10px;line-height:1.75}
+  .content{min-width:0;padding:28px}.page{display:none;max-width:1190px;margin:0 auto;animation:rise .3s ease}.page.active{display:block}@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .hero{position:relative;overflow:hidden;min-height:260px;padding:42px 46px;background:var(--pine);color:#fff;box-shadow:var(--shadow)}.hero::before{content:"";position:absolute;right:-110px;top:-180px;width:470px;height:470px;border:1px solid rgba(255,255,255,.1);border-radius:50%;box-shadow:0 0 0 48px rgba(255,255,255,.025),0 0 0 96px rgba(255,255,255,.018)}.hero::after{content:"T";position:absolute;right:95px;bottom:-30px;color:rgba(217,169,92,.13);font:900 210px/1 Georgia,serif}.eyebrow{position:relative;z-index:1;color:#e4bc7d;font:800 11px/1.4 Consolas,monospace;letter-spacing:2px}.hero h1{position:relative;z-index:1;max-width:780px;margin:22px 0 12px;font:800 clamp(34px,5vw,62px)/1.08 "Songti SC",SimSun,serif;letter-spacing:-2px}.hero p{position:relative;z-index:1;max-width:760px;margin:0;color:#c7d8d2}.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px;margin-top:27px}.hero-tags span{padding:7px 10px;border:1px solid rgba(255,255,255,.18);font-size:10px}
+  .section{margin-top:22px;padding:30px 34px;background:var(--white);border:1px solid var(--line);box-shadow:0 12px 34px rgba(26,51,43,.055)}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:23px;padding-bottom:15px;border-bottom:1px solid var(--line)}.section-head small{display:block;color:var(--brick);font:800 10px Consolas,monospace;letter-spacing:1.5px}.section-head h2{margin:7px 0 0;font:800 26px/1.3 "Songti SC",SimSun,serif}.section-head p{max-width:530px;margin:0;color:var(--muted);font-size:12px}.stamp{flex:none;padding:7px 10px;border:1px solid #c7a48f;color:var(--brick);font:800 10px Consolas,monospace;transform:rotate(-2deg)}
+  .category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.category-card{position:relative;overflow:hidden;padding:23px;border:1px solid var(--line);background:var(--paper)}.category-card::after{content:attr(data-count);position:absolute;right:12px;bottom:-18px;color:rgba(32,53,47,.07);font:900 100px/1 Georgia,serif}.category-card i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--notice)}.category-card.report i{background:var(--report)}.category-card.question i{background:var(--question)}.category-card h3{margin:13px 0 9px;font:800 21px "Songti SC",SimSun,serif}.category-card p{margin:0;color:var(--muted);font-size:12px}.category-card b{display:block;margin-top:16px;color:var(--brick);font:800 10px Consolas,monospace;letter-spacing:1px}
+  .flow{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr 34px 1fr;align-items:center;gap:8px}.flow-step{min-height:112px;padding:18px;border-top:3px solid var(--pine2);background:#edf1ec}.flow-step b{display:block;color:var(--brick);font:800 10px Consolas,monospace}.flow-step strong{display:block;margin-top:8px;font-size:17px}.flow-step span{display:block;margin-top:5px;color:var(--muted);font-size:11px}.flow-arrow{text-align:center;color:var(--brick);font-size:22px}
+  .summary-band{display:grid;grid-template-columns:1fr 1fr;gap:16px}.summary-item{padding:23px;border-left:4px solid var(--pine2);background:#eff2ed}.summary-item.boundary{border-color:var(--brick);background:#f3e8dd}.summary-item small{color:var(--brick);font:800 10px Consolas,monospace}.summary-item h3{margin:9px 0 7px;font-size:19px}.summary-item p{margin:0;color:var(--muted);font-size:12px}
+  .sample-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.text-sample{position:relative;padding:21px;border:1px solid var(--line);border-top:4px solid var(--notice);background:var(--paper)}.text-sample[data-category="宣传报道"]{border-top-color:var(--report)}.text-sample[data-category="咨询提问"]{border-top-color:var(--question)}.text-sample.ambiguous{border-right:4px solid var(--amber);background:linear-gradient(135deg,#f8f2e8,#f1e4d6)}.sample-head{display:flex;align-items:center;justify-content:space-between;gap:12px}.sample-id{color:var(--brick);font:800 11px Consolas,monospace;letter-spacing:1px}.category-label{padding:4px 8px;background:#dce9e3;color:#265848;font-size:10px;font-weight:800}.text-sample[data-category="宣传报道"] .category-label{background:#eee0d8;color:#93432f}.text-sample[data-category="咨询提问"] .category-label{background:#e7e8dc;color:#666a45}.boundary-label{display:inline-block;margin-top:10px;padding:4px 8px;background:var(--brick);color:#fff;font-size:9px;font-weight:800;letter-spacing:.7px}.source-text{margin:16px 0;color:#263a33;font-size:14px;line-height:1.8}.keywords{display:flex;flex-wrap:wrap;gap:6px;margin-top:13px}.keywords span{padding:4px 8px;border:1px solid #cad3cc;background:#f6f7f2;color:#617069;font-size:9px}.reason{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:11px}.reason b{color:var(--ink)}.boundary-note{margin:11px 0 0;padding:10px 12px;background:rgba(173,73,51,.08);color:#7e493b;font-size:11px}
+  .media-frame{position:relative;overflow:hidden;border:1px solid #b9c7bf;background:linear-gradient(135deg,#143d33,#2c6858);min-height:280px}.media-frame img{width:100%;height:auto}.media-actions{display:flex;gap:9px;margin-top:12px}.media-actions a{padding:8px 12px;border:1px solid #afbbb4;background:#f2f4ef;text-decoration:none;font-size:11px}.image-error::after{content:"操作记录图暂未载入，请检查 assets 文件夹";position:absolute;inset:0;display:grid;place-items:center;padding:30px;background:linear-gradient(135deg,#173e34,#224f43);color:#fff;text-align:center}
+  .prompt-card{position:relative;padding:23px 24px 23px 54px;background:#172f29;color:#dce8e3;border-left:4px solid var(--amber)}.prompt-card::before{content:"“";position:absolute;left:16px;top:12px;color:var(--amber);font:60px/1 Georgia,serif}.prompt-card b{display:block;margin-bottom:9px;color:#e7c58f;font-size:11px;letter-spacing:1px}.prompt-card p{margin:0;font-size:12px}
+  .report-box{padding:22px 24px;border-left:4px solid var(--brick);background:#f2ece2}.report-box h3{margin:0 0 10px;font:800 18px "Songti SC",SimSun,serif}.report-box p{margin:0;color:#45564f}
+  .analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}.analysis-card{padding:24px;border:1px solid var(--line);background:var(--paper)}.analysis-card header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:15px;border-bottom:1px solid var(--line)}.analysis-card header b{color:var(--brick);font:800 12px Consolas,monospace}.analysis-card header span{font:800 10px;color:#7b877f}.analysis-text{margin:17px 0;color:#34473f}.analysis-fields{display:grid;grid-template-columns:104px 1fr;gap:0}.analysis-fields dt,.analysis-fields dd{margin:0;padding:10px 9px;border-bottom:1px solid #ded8cc}.analysis-fields dt{color:var(--brick);font-size:11px;font-weight:800}.analysis-fields dd{color:#56655e;font-size:12px}.evidence-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.evidence-explicit,.evidence-inferred{padding:15px;background:#dfeae5}.evidence-inferred{background:#f0e1d4}.evidence-pair b{display:block;margin-bottom:7px;font-size:10px}.evidence-pair p{margin:0;color:#5c6963;font-size:11px}
+  .position{display:grid;grid-template-columns:1fr 1fr;gap:16px}.position-card{padding:23px;border-top:4px solid var(--pine2);background:#edf1ec}.position-card:last-child{border-color:var(--brick);background:#f3e7dc}.position-card h3{margin:0 0 9px}.position-card p{margin:0;color:var(--muted);font-size:12px}
+  .route-next{display:flex;justify-content:flex-end;margin:24px 0}.route-next button{padding:10px 15px;border:0;background:var(--pine);color:#fff;cursor:pointer}.route-next button:hover{background:var(--brick)}
+  .embed-mode .shell{display:block}.embed-mode .sidebar{display:none}.embed-mode .content{padding:18px}.embed-mode .page{max-width:1280px}.embed-mode .hero{min-height:230px}
+  @media(max-width:900px){.shell{display:block}.sidebar{position:relative;height:auto}.side-nav{grid-template-columns:repeat(3,1fr)}.side-foot{display:none}.content{padding:14px}.hero{padding:31px 25px}.section{padding:24px 20px}.category-grid,.sample-grid,.analysis-grid,.summary-band,.position{grid-template-columns:1fr}.flow{grid-template-columns:1fr}.flow-arrow{transform:rotate(90deg)}.section-head{display:block}.section-head p{margin-top:10px}.evidence-pair{grid-template-columns:1fr}}
+  @media(max-width:520px){.side-nav{grid-template-columns:1fr}.hero h1{letter-spacing:-1px}.hero::after{display:none}.embed-mode .content{padding:8px}.embed-mode .section{margin-top:10px}.media-frame{overflow:auto}.media-frame img{min-width:760px}}
+  @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.page{animation:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="archive-id"><b>D06</b><div><span>LEARNING ARCHIVE</span><strong>AI 文本分类与语言理解</strong></div></div>
+    <div class="side-meta">2026 · JULY</div>
+    <div class="side-date">07.23<small>第六天作业成果<br>AI 编辑实验 × 理论思考</small></div>
+    <nav class="side-nav" aria-label="第六天章节">
+      <button type="button" data-target="overview"><i>00</i><b>当日总览</b></button>
+      <button type="button" data-target="task1"><i>01</i><b>AI 编辑分类</b></button>
+      <button type="button" data-target="task2"><i>02</i><b>理解还是预测</b></button>
+    </nav>
+    <div class="side-foot">标签不是文本天生拥有的答案。<br>它来自任务标准，也需要为边界保留解释空间。</div>
+  </aside>
+
+  <main class="content">
+    <article class="page" data-page="overview" id="overview">
+      <header class="hero">
+        <div class="eyebrow">DAY 06 / AI EDITOR EXPERIMENT</div>
+        <h1>从十条短文本开始<br>观察 AI 如何分类</h1>
+        <p>今天不按体育、科技或校园主题分组，而是判断文本想让读者接收安排、了解成果，还是提出问题。</p>
+        <div class="hero-tags"><span>10 条原文</span><span>3 类功能标签</span><span>2 条边界样本</span><span>2 篇 150+ 字分析</span></div>
+      </header>
+
+      <section class="section">
+        <div class="section-head"><div><small>LABEL SYSTEM</small><h2>三类编辑标签</h2></div><p>分类标准依据文本的主要交际功能。主题相同的两段文字，也可能因为写作目的不同而属于不同类别。</p></div>
+        <div class="category-grid">
+          <div class="category-card" data-count="4"><i></i><h3>通知公告</h3><p>告知时间、地点、规则、安排、截止日期或读者需要执行的动作。</p><b>4 TEXTS / ACTION</b></div>
+          <div class="category-card report" data-count="3"><i></i><h3>宣传报道</h3><p>呈现成果、塑造形象、表达赞扬，或增强读者对事件的关注。</p><b>3 TEXTS / IMPRESSION</b></div>
+          <div class="category-card question" data-count="3"><i></i><h3>咨询提问</h3><p>提出疑问、请求解释、询问流程，或希望获得具体解决办法。</p><b>3 TEXTS / ANSWER</b></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><small>WORKFLOW</small><h2>AI 编辑实验流程</h2></div><span class="stamp">4 STEPS</span></div>
+        <div class="flow"><div class="flow-step"><b>01</b><strong>读取原文</strong><span>保留时间、动作和语气线索。</span></div><div class="flow-arrow">→</div><div class="flow-step"><b>02</b><strong>判断功能</strong><span>文本主要想让读者做什么？</span></div><div class="flow-arrow">→</div><div class="flow-step"><b>03</b><strong>提取依据</strong><span>给出关键词与简短理由。</span></div><div class="flow-arrow">→</div><div class="flow-step"><b>04</b><strong>人工复核</strong><span>为多意图文本保留边界。</span></div></div>
+      </section>
+
+      <section class="section">
+        <div class="summary-band"><div class="summary-item"><small>TASK 01</small><h3>10 条信息的 AI 编辑实验</h3><p>完成原文分类、关键词提取、理由说明、操作记录图和 150 字以上实验分析。</p></div><div class="summary-item boundary"><small>TASK 02</small><h3>AI 是理解还是预测？</h3><p>选择 T02、T08 分析意图和语气，并区分文本中的显性证据与模型的模式推断。</p></div></div>
+      </section>
+      <div class="route-next"><button type="button" data-target="task1">查看任务一 →</button></div>
+    </article>
+
+    <article class="page" data-page="task1" id="task1">
+      <header class="hero">
+        <div class="eyebrow">TASK 01 / TEXT CLASSIFICATION</div>
+        <h1>10 条信息的<br>AI 编辑实验</h1>
+        <p>为每条短文本给出功能标签、关键词和分类理由；遇到通知与宣传重叠的文本，不隐藏歧义。</p>
+        <div class="hero-tags"><span>通知公告 4</span><span>宣传报道 3</span><span>咨询提问 3</span><span>T02 / T08 需复核</span></div>
+      </header>
+
+      <section class="section">
+        <div class="section-head"><div><small>CLASSIFICATION RESULTS</small><h2>十条原文与分类结果</h2></div><p>标签颜色代表功能类别；右侧琥珀色边框代表边界样本，需要人工复核。</p></div>
+        <div class="sample-grid">
+          <article class="text-sample" data-id="T01" data-category="通知公告"><div class="sample-head"><span class="sample-id">T01</span><span class="category-label">通知公告</span></div><p class="source-text">图书馆将于 7 月 24 日 18:00 至 22:00 进行网络升级，期间自助借还机暂停使用，纸质图书可在一楼服务台人工办理。</p><div class="keywords"><span>图书馆</span><span>网络升级</span><span>暂停使用</span><span>人工办理</span></div><p class="reason"><b>分类理由：</b>提供明确时间、影响范围和替代办理方式，主要功能是告知安排。</p></article>
+          <article class="text-sample ambiguous" data-id="T02" data-category="通知公告"><div class="sample-head"><span class="sample-id">T02</span><span class="category-label">通知公告</span></div><span class="boundary-label">边界样本 · 需人工复核</span><p class="source-text">为帮助同学熟悉生成式 AI 工具，学校将于 7 月 24 日至 26 日开放“校园 AI 写作助手体验周”。参与者可完成三项写作挑战并提交改进建议。</p><div class="keywords"><span>生成式 AI</span><span>体验周</span><span>写作挑战</span><span>改进建议</span></div><p class="reason"><b>分类理由：</b>包含明确活动日期、参与方式和任务，主功能是活动通知。</p><p class="boundary-note">难点：积极表达和体验邀请也具有推广工具、吸引参与的宣传意味。</p></article>
+          <article class="text-sample" data-id="T03" data-category="宣传报道"><div class="sample-head"><span class="sample-id">T03</span><span class="category-label">宣传报道</span></div><p class="source-text">校田径队在市大学生运动会上获得 4 金 3 银，女子接力项目刷新校纪录。队员们表示，成绩来自暑期训练中的相互鼓励与坚持。</p><div class="keywords"><span>田径队</span><span>4 金 3 银</span><span>校纪录</span><span>坚持</span></div><p class="reason"><b>分类理由：</b>突出竞赛成果和团队精神，主要作用是报道成绩并塑造积极形象。</p></article>
+          <article class="text-sample" data-id="T04" data-category="咨询提问"><div class="sample-head"><span class="sample-id">T04</span><span class="category-label">咨询提问</span></div><p class="source-text">请问暑期宿舍维修期间，已经离校的同学是否需要提前清空书桌？如果个人物品无法带走，可以申请临时存放吗？</p><div class="keywords"><span>宿舍维修</span><span>清空书桌</span><span>个人物品</span><span>临时存放</span></div><p class="reason"><b>分类理由：</b>连续使用疑问句，请求解释维修期间的物品处理规则。</p></article>
+          <article class="text-sample" data-id="T05" data-category="通知公告"><div class="sample-head"><span class="sample-id">T05</span><span class="category-label">通知公告</span></div><p class="source-text">信息中心计划本周五 12:30 更新校园网认证系统。更新完成后，师生首次登录需重新确认手机号，请提前保存未上传的在线文件。</p><div class="keywords"><span>认证系统</span><span>系统更新</span><span>重新确认</span><span>保存文件</span></div><p class="reason"><b>分类理由：</b>给出更新时间、用户动作和风险提醒，属于系统维护通知。</p></article>
+          <article class="text-sample" data-id="T06" data-category="宣传报道"><div class="sample-head"><span class="sample-id">T06</span><span class="category-label">宣传报道</span></div><p class="source-text">学生创新实验室开发的垃圾分类识别系统完成校园试运行，平均识别准确率达到 94%。项目组希望用视觉技术降低分类错误率。</p><div class="keywords"><span>创新实验室</span><span>垃圾分类</span><span>试运行</span><span>94%</span></div><p class="reason"><b>分类理由：</b>聚焦项目成果、性能数据和社会价值，主要功能是成果报道。</p></article>
+          <article class="text-sample" data-id="T07" data-category="咨询提问"><div class="sample-head"><span class="sample-id">T07</span><span class="category-label">咨询提问</span></div><p class="source-text">新生报到是否必须携带纸质录取通知书？电子版材料能否用于现场核验，家长车辆又应该从哪个校门进入？</p><div class="keywords"><span>新生报到</span><span>录取通知书</span><span>电子材料</span><span>车辆入口</span></div><p class="reason"><b>分类理由：</b>围绕报到材料和交通流程提出多个具体问题。</p></article>
+          <article class="text-sample ambiguous" data-id="T08" data-category="通知公告"><div class="sample-head"><span class="sample-id">T08</span><span class="category-label">通知公告</span></div><span class="boundary-label">边界样本 · 需人工复核</span><p class="source-text">校园运动会志愿者招募开始啦！服务岗位包括检录、引导和物资协助，报名截止 7 月 25 日，期待你成为赛场的一束光。</p><div class="keywords"><span>运动会</span><span>志愿者招募</span><span>服务岗位</span><span>报名截止</span></div><p class="reason"><b>分类理由：</b>包含岗位、报名截止时间和行动要求，主要功能是招募通知。</p><p class="boundary-note">难点：“开始啦”和比喻句具有明显号召、宣传色彩，也可被理解为宣传文案。</p></article>
+          <article class="text-sample" data-id="T09" data-category="宣传报道"><div class="sample-head"><span class="sample-id">T09</span><span class="category-label">宣传报道</span></div><p class="source-text">校篮球队在落后 12 分的情况下完成逆转，最终以 78:74 赢得决赛。看台上持续不断的助威声成为球队坚持到最后的重要力量。</p><div class="keywords"><span>篮球队</span><span>逆转</span><span>决赛</span><span>助威</span></div><p class="reason"><b>分类理由：</b>通过比赛结果和叙事情节突出团队表现，属于体育宣传报道。</p></article>
+          <article class="text-sample" data-id="T10" data-category="咨询提问"><div class="sample-head"><span class="sample-id">T10</span><span class="category-label">咨询提问</span></div><p class="source-text">食堂延长晚餐服务时间后，为什么部分窗口仍在 19:30 前停止供餐？能否公布各窗口的实际营业时间，避免同学空跑？</p><div class="keywords"><span>食堂</span><span>服务时间</span><span>停止供餐</span><span>营业时间</span></div><p class="reason"><b>分类理由：</b>以疑问形式指出服务与公告不一致，并请求公开准确信息。</p></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><small>OPERATION RECORD</small><h2>Codex AI 编辑实验记录</h2></div><p>展示本次分类指令、AI 输出摘要与人工复核过程，并明确说明真实来源。</p></div>
+        <div class="media-frame"><img src="../assets/2026-07-23-AI编辑分类实验操作记录.png" alt="Codex AI 编辑实验记录"></div>
+        <div class="media-actions"><a href="../assets/2026-07-23-AI编辑分类实验操作记录.png" target="_blank" rel="noopener">打开高清 PNG</a><a href="../assets/2026-07-23-AI编辑分类实验操作记录.svg" target="_blank" rel="noopener">查看可缩放 SVG</a></div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><small>PROMPT & REPORT</small><h2>提示词与实验分析</h2></div></div>
+        <div class="prompt-card"><b>本次 AI 编辑指令</b><p>请将 10 条校园短文本按“通知公告 / 宣传报道 / 咨询提问”分类。每条给出 3—5 个关键词和简短理由；当文本同时具有多种功能时，以主要交际目的为主标签，并标记至少 2 条边界样本，说明为什么难以判断。</p></div>
+        <div class="report-box" style="margin-top:16px"><h3>实验分析（150 字以上）</h3><p id="task1-report">本次实验采用“文本功能”而不是“新闻主题”进行分类，因此判断重点不是文章谈论体育、科技还是校园生活，而是它希望读者接收安排、了解成果，还是回答问题。时间、截止日期、操作要求和替代方案通常指向通知公告；成绩、赞扬和价值表达更接近宣传报道；疑问词和请求解释则是咨询提问的重要线索。T02 与 T08 最难判断，因为两条文本既给出日期、岗位等行动信息，又使用鼓励、号召和比喻来吸引参与。AI 能较稳定地识别这些显性语言特征，但分类边界仍由人设定：如果任务更关注传播风格，它们也可能被归入宣传类。因此 AI 编辑结果应作为结构化初筛，边界样本还需要人工复核，而不能把标签当成绝对事实。</p></div>
+      </section>
+      <div class="route-next"><button type="button" data-target="task2">继续查看任务二 →</button></div>
+    </article>
+
+    <article class="page" data-page="task2" id="task2">
+      <header class="hero">
+        <div class="eyebrow">TASK 02 / UNDERSTANDING OR PREDICTION</div>
+        <h1>AI 是理解文字<br>还是预测文字？</h1>
+        <p>分析 T02、T08 的意图、语气和情感，并区分模型读到的显性证据与它根据语言模式作出的推断。</p>
+        <div class="hero-tags"><span>意图</span><span>语气</span><span>情感倾向</span><span>作者意图</span><span>可靠性边界</span></div>
+      </header>
+
+      <section class="section">
+        <div class="section-head"><div><small>TWO TEXTS / SIX DIMENSIONS</small><h2>两条边界文本的深度分析</h2></div><span class="stamp">AI ANALYSIS</span></div>
+        <div class="analysis-grid">
+          <article class="analysis-card" data-analysis="T02"><header><b>T02 / AI 写作助手体验周</b><span>通知 × 宣传</span></header><p class="analysis-text">“为帮助同学熟悉生成式 AI 工具，学校将于 7 月 24 日至 26 日开放‘校园 AI 写作助手体验周’。参与者可完成三项写作挑战并提交改进建议。”</p><dl class="analysis-fields"><dt>意图</dt><dd>告知体验周，并邀请学生参与和提交反馈。</dd><dt>语气</dt><dd>正式中带鼓励。</dd><dt>情感倾向</dt><dd>积极。</dd><dt>作者意图</dt><dd>提高工具试用率，同时收集改进意见。</dd></dl><div class="evidence-pair"><div class="evidence-explicit"><b>显性证据</b><p>日期、体验周、三项写作挑战和提交建议均直接写在文本中。</p></div><div class="evidence-inferred"><b>模式推断</b><p>“提高试用率”未直接写出，是依据活动邀请和产品体验语言推断。</p></div></div></article>
+          <article class="analysis-card" data-analysis="T08"><header><b>T08 / 运动会志愿者招募</b><span>通知 × 宣传</span></header><p class="analysis-text">“校园运动会志愿者招募开始啦！服务岗位包括检录、引导和物资协助，报名截止 7 月 25 日，期待你成为赛场的一束光。”</p><dl class="analysis-fields"><dt>意图</dt><dd>发布志愿者招募信息，并促使学生报名。</dd><dt>语气</dt><dd>活泼、号召性强。</dd><dt>情感倾向</dt><dd>热情积极。</dd><dt>作者意图</dt><dd>补充服务岗位，并营造运动会共同参与感。</dd></dl><div class="evidence-pair"><div class="evidence-explicit"><b>显性证据</b><p>服务岗位、报名截止时间和行动要求可以直接核对。</p></div><div class="evidence-inferred"><b>模式推断</b><p>“营造共同参与感”来自比喻与号召句式，不是作者内心的可验证事实。</p></div></div></article>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div><small>MY POSITION</small><h2>预测机制与功能性理解</h2></div></div>
+        <div class="position"><div class="position-card"><h3>它确实在预测文字</h3><p>模型根据上下文计算后续表达的可能性，没有人的生活经历、自我意识，也不会真实感受到文字中的热情或焦虑。</p></div><div class="position-card"><h3>但不等于随机接龙</h3><p>大规模预测训练形成了可处理语义、语气和上下文关系的内部表示，因此能完成有用、但有边界的功能性理解。</p></div></div>
+      </section>
+
+      <section class="section">
+        <div class="report-box"><h3>学习思考（150 字以上）</h3><p id="task2-reflection">从生成机制看，AI 的核心工作确实是根据上下文预测后续文字，它没有人的生活经历、自我意识，也不会真正感受到热情、焦虑或期待。不过，把它简单说成“随机接龙”也不准确：大规模预测训练使模型形成了能够处理语义、语气和上下文关系的内部表示，所以它可以完成有用的功能性理解。对 T02、T08 中的日期、报名截止、疑问句、褒义词和行动要求，AI 的判断比较准确，因为这些都是文本中的显性证据；但“作者想提高工具试用率”或“营造共同参与感”并没有被直接写出，更多是模型根据常见传播语言作出的模式推断。由此我认为，AI 能给出有依据的候选解释，却不能证明作者内心的真实想法。使用时应区分文本事实与推断，并允许人工修正歧义。</p></div>
+      </section>
+      <div class="route-next"><button type="button" data-target="overview">返回今日总览 ↑</button></div>
+    </article>
+  </main>
+</div>
+<script>
+  if (new URLSearchParams(location.search).get('embed') === '1') {
+    document.body.classList.add('embed-mode');
+  }
+  const pages = [...document.querySelectorAll('.page')];
+  const navButtons = [...document.querySelectorAll('[data-target]')];
+  function showPage(id, updateHash = true) {
+    if (!pages.some(page => page.dataset.page === id)) id = 'overview';
+    pages.forEach(page => page.classList.toggle('active', page.dataset.page === id));
+    navButtons.forEach(button => button.classList.toggle('active', button.dataset.target === id));
+    if (updateHash) history.replaceState(null, '', `#${id}`);
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+  navButtons.forEach(button => button.addEventListener('click', () => showPage(button.dataset.target)));
+  document.querySelectorAll('img').forEach(image => image.addEventListener('error', () => {
+    image.closest('.media-frame')?.classList.add('image-error');
+  }));
+  window.addEventListener('hashchange', () => showPage(location.hash.slice(1), false));
+  const requestedPage = new URLSearchParams(location.search).get('page') || location.hash.slice(1) || 'overview';
+  showPage(requestedPage, false);
+</script>
+</body>
+</html>
